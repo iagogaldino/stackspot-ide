@@ -1,0 +1,33 @@
+{
+  "name": "test-finder-extension",
+  "displayName": "Test Finder",
+  "version": "1.0.0",
+  "description": "Lista todos os arquivos de teste do projeto Angular",
+  "publisher": "myide",
+  "engines": {
+    "myide": "^1.0.0"
+  },
+  "main": "./dist/main.js",
+  "activationEvents": [
+    "onStart"
+  ],
+  "contributes": {
+    "views": {
+      "activityBar": [
+        {
+          "id": "testFinder",
+          "title": "Testes",
+          "icon": "🧪"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "testFinder.refresh",
+        "title": "Atualizar Lista de Testes",
+        "icon": "🔄"
+      }
+    ]
+  }
+}
+

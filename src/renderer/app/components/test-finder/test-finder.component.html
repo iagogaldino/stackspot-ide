@@ -1,0 +1,48 @@
+<div class="test-finder">
+  <div class="test-finder-header">
+    <h3>🧪 Arquivos de Teste</h3>
+    <button 
+      class="refresh-btn"
+      (click)="loadTestFiles()"
+      [disabled]="loading"
+      title="Atualizar lista">
+      {{ loading ? '⏳' : '🔄' }}
+    </button>
+  </div>
+
+  <div class="test-finder-content">
+    <!-- Loading -->
+    <div class="test-finder-loading" *ngIf="loading">
+      <p>Buscando arquivos de teste...</p>
+    </div>
+
+    <!-- Error -->
+    <div class="test-finder-error" *ngIf="error && !loading">
+      <p>❌ {{ error }}</p>
+    </div>
+
+    <!-- Empty state -->
+    <div class="test-finder-empty" *ngIf="!loading && !error && testFiles.length === 0">
+      <p>Nenhum arquivo de teste encontrado</p>
+      <p class="hint">Arquivos .spec.ts, .test.ts serão exibidos aqui</p>
+    </div>
+
+    <!-- Test files list -->
+    <div class="test-files-list" *ngIf="!loading && !error && testFiles.length > 0">
+      <div 
+        class="test-file-item"
+        *ngFor="let file of testFiles"
+        (click)="openTestFile(file)"
+        title="Clique para abrir">
+        <span class="test-file-icon">🧪</span>
+        <span class="test-file-name">{{ getFileName(file) }}</span>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="test-finder-summary" *ngIf="!loading && testFiles.length > 0">
+      <p>{{ testFiles.length }} arquivo(s) de teste encontrado(s)</p>
+    </div>
+  </div>
+</div>
+

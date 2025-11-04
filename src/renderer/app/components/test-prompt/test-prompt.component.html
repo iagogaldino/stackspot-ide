@@ -1,0 +1,60 @@
+<div class="test-prompt">
+  <div class="test-prompt-header">
+    <h4>💬 Assistente de Teste</h4>
+    <span class="test-file-name" *ngIf="testFilePath">{{ getFileName() }}</span>
+  </div>
+
+  <div class="test-prompt-messages" #messagesContainer>
+    <div 
+      *ngFor="let message of messages; let i = index" 
+      class="message"
+      [class.user-message]="message.role === 'user'"
+      [class.assistant-message]="message.role === 'assistant'">
+      <div class="message-content">
+        <div *ngIf="message.content" class="message-text">
+          <ng-container *ngFor="let part of renderMessageContent(message)">
+            <div *ngIf="part.type === 'text'" class="message-text-part">{{ part.content }}</div>
+            <app-code-block 
+              *ngIf="part.type === 'code'" 
+              [code]="part.content" 
+              [language]="part.language || 'typescript'"
+              [enableTyping]="message.role === 'assistant'"
+              [typingSpeed]="15">
+            </app-code-block>
+          </ng-container>
+        </div>
+        <div class="message-time">{{ formatTime(message.timestamp) }}</div>
+      </div>
+    </div>
+    
+    <!-- Indicador de digitação -->
+    <div *ngIf="isTyping" class="message assistant-message">
+      <div class="message-content">
+        <div class="typing-indicator">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="test-prompt-input">
+    <input
+      #messageInput
+      type="text"
+      [(ngModel)]="userMessage"
+      placeholder="Digite sua pergunta sobre este teste..."
+      class="prompt-input"
+      (keydown.enter)="$event.preventDefault(); sendMessage()"
+      [disabled]="isTyping || !isConfigured()">
+    <button 
+      class="send-btn"
+      (click)="sendMessage()"
+      [disabled]="!userMessage.trim() || isTyping || !isConfigured()"
+      title="Enviar mensagem">
+      ➤
+    </button>
+  </div>
+</div>
+
