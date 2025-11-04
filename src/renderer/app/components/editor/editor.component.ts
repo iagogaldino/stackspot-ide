@@ -5,6 +5,7 @@ import { JSONEditorConfigService } from '../../services/json-editor-config.servi
 import { JSONVisualEditorComponent } from '../json-editor/json-visual-editor.component';
 import { JSONEditorSettingsComponent } from '../json-editor/settings/json-editor-settings.component';
 import { MarkdownPreviewComponent } from '../markdown-preview/markdown-preview.component';
+import { TestVisualEditorComponent } from '../test-editor/test-visual-editor.component';
 import { TabsService } from '../../services/tabs.service';
 import { MonacoEditorService } from '../../services/monaco-editor.service';
 import { Subscription } from 'rxjs';
@@ -32,7 +33,7 @@ if (!(globalThis as any).MonacoEnvironment) {
 @Component({
   selector: 'app-editor',
   standalone: true,
-  imports: [CommonModule, JSONVisualEditorComponent, JSONEditorSettingsComponent, MarkdownPreviewComponent],
+  imports: [CommonModule, JSONVisualEditorComponent, JSONEditorSettingsComponent, MarkdownPreviewComponent, TestVisualEditorComponent],
   templateUrl: './editor.component.html',
   styleUrl: './editor.component.css'
 })
@@ -52,6 +53,10 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
   // Para preview Markdown
   markdownContent: string = '';
   showMarkdownPreview = false;
+  
+  // Para editor de testes visual
+  testFileContent: string = '';
+  showTestVisualEditor = false;
 
   constructor(
     private fileService: FileService,
@@ -99,6 +104,8 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
       this.showVisualEditor = false;
       this.markdownContent = '';
       this.showMarkdownPreview = false;
+      this.testFileContent = '';
+      this.showTestVisualEditor = false;
       
       // Carregar novo arquivo se houver
       // Usar setTimeout para garantir que o DOM está atualizado
@@ -123,6 +130,8 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
       this.showVisualEditor = false;
       this.markdownContent = '';
       this.showMarkdownPreview = false;
+      this.testFileContent = '';
+      this.showTestVisualEditor = false;
       return;
     }
 
@@ -141,6 +150,14 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
           this.markdownContent = content;
           this.showMarkdownPreview = true;
           this.showVisualEditor = false;
+          this.showTestVisualEditor = false;
+        }
+        // Verificar se é arquivo de teste
+        else if (this.isTestFile()) {
+          this.testFileContent = content;
+          this.showTestVisualEditor = true;
+          this.showVisualEditor = false;
+          this.showMarkdownPreview = false;
         }
         // Verificar se deve usar editor visual para JSON
         else if (this.shouldUseVisualEditor()) {
@@ -150,6 +167,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
             if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
               this.jsonData = parsed;
               this.showVisualEditor = true;
+              this.showTestVisualEditor = false;
               // Não criar Monaco Editor ainda - será criado se o visual falhar
             } else {
               // JSON válido mas não é objeto simples, usar Monaco
@@ -174,6 +192,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
           }
         } else {
           this.showVisualEditor = false;
+          this.showTestVisualEditor = false;
           // Aguardar um pouco para garantir que o DOM está atualizado
           setTimeout(() => {
             if (this.filePath && this.editorContainer?.nativeElement) {
@@ -240,6 +259,48 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
           this.createEditor(content);
         }
       });
+    }
+  }
+
+  /**
+   * Verifica se é arquivo de teste
+   */
+  isTestFile(): boolean {
+    if (!this.filePath) return false;
+    const lowerPath = this.filePath.toLowerCase();
+    return lowerPath.endsWith('.spec.ts') || 
+           lowerPath.endsWith('.test.ts') || 
+           lowerPath.endsWith('.spec.js') || 
+           lowerPath.endsWith('.test.js');
+  }
+
+  /**
+   * Alterna entre editor visual e Monaco Editor (para Testes)
+   */
+  toggleTestVisualEditor() {
+    this.showTestVisualEditor = !this.showTestVisualEditor;
+    if (!this.showTestVisualEditor && this.editorContainer) {
+      // Recarregar conteúdo no Monaco
+      this.fileService.readFile(this.filePath).subscribe({
+        next: (content) => {
+          this.createEditor(content);
+        }
+      });
+    }
+  }
+
+  /**
+   * Handler para mudanças no editor visual de testes
+   */
+  onTestFileChanged(content: string) {
+    this.testFileContent = content;
+    // Recarregar no Monaco se necessário
+    if (!this.showTestVisualEditor && this.editorContainer) {
+      setTimeout(() => {
+        if (this.filePath && this.editorContainer?.nativeElement) {
+          this.createEditor(content);
+        }
+      }, 100);
     }
   }
 

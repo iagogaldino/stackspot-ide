@@ -10,35 +10,36 @@
 .panel-content {
   text-align: center;
   max-width: 500px;
-  padding: 40px;
+  padding: 30px;
 }
 
 h1 {
-  font-size: 48px;
+  font-size: 36px;
   color: #ffffff;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   font-weight: 300;
 }
 
 .subtitle {
-  font-size: 18px;
+  font-size: 14px;
   color: #858585;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 .actions {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .btn-primary {
   background-color: #007acc;
   color: white;
   border: none;
-  padding: 12px 24px;
-  font-size: 16px;
-  border-radius: 4px;
+  padding: 8px 18px;
+  font-size: 13px;
+  border-radius: 3px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.15s;
+  font-weight: 500;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -46,7 +47,7 @@ h1 {
 }
 
 .btn-primary:disabled {
-  opacity: 0.6;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
@@ -54,13 +55,13 @@ h1 {
   background-color: #3a1d1d;
   border: 1px solid #a12626;
   color: #f48771;
-  padding: 12px;
-  border-radius: 4px;
-  margin-top: 20px;
+  padding: 8px 12px;
+  border-radius: 3px;
+  margin-top: 16px;
 }
 
 .error p {
   margin: 0;
-  font-size: 14px;
+  font-size: 12px;
 }
 

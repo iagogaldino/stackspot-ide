@@ -11,18 +11,18 @@
   display: flex;
   border-bottom: 1px solid #3e3e42;
   background-color: #252526;
-  padding: 0 8px;
+  padding: 0 6px;
 }
 
 .tab-btn {
-  padding: 8px 16px;
+  padding: 6px 12px;
   background: none;
   border: none;
   color: #858585;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 11px;
   border-bottom: 2px solid transparent;
-  transition: all 0.2s;
+  transition: all 0.15s;
   margin-bottom: -1px;
 }
 
@@ -37,7 +37,7 @@
 }
 
 .extensions-header {
-  padding: 16px;
+  padding: 10px 12px;
   border-bottom: 1px solid #3e3e42;
   display: flex;
   justify-content: space-between;
@@ -47,7 +47,7 @@
 
 .extensions-header h2 {
   margin: 0;
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 600;
   color: #ffffff;
 }
@@ -56,51 +56,53 @@
   background: none;
   border: none;
   color: #858585;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: all 0.2s;
+  padding: 3px 6px;
+  border-radius: 2px;
+  transition: all 0.15s;
+  opacity: 0.7;
 }
 
 .reload-btn:hover {
   background-color: #3e3e42;
   color: #cccccc;
+  opacity: 1;
 }
 
 .extensions-list,
 .marketplace-list {
   flex: 1;
   overflow-y: auto;
-  padding: 8px;
+  padding: 6px;
 }
 
 .marketplace-header {
-  padding: 16px;
+  padding: 10px 12px;
   border-bottom: 1px solid #3e3e42;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .marketplace-description {
   margin: 0;
   color: #858585;
-  font-size: 13px;
+  font-size: 11px;
 }
 
 .marketplace-extensions {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .marketplace-item {
   background-color: #252526;
   border: 1px solid #3e3e42;
-  border-radius: 4px;
-  padding: 16px;
+  border-radius: 3px;
+  padding: 10px 12px;
   display: flex;
-  gap: 16px;
-  transition: all 0.2s;
+  gap: 12px;
+  transition: all 0.15s;
 }
 
 .marketplace-item:hover {
@@ -241,13 +243,13 @@
 .extension-item {
   background-color: #252526;
   border: 1px solid #3e3e42;
-  border-radius: 4px;
-  padding: 12px;
-  margin-bottom: 8px;
+  border-radius: 3px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  transition: all 0.2s;
+  transition: all 0.15s;
 }
 
 .extension-item:hover {

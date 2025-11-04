@@ -11,7 +11,7 @@
 .json-editor-header {
   background-color: #2d2d30;
   border-bottom: 1px solid #3e3e42;
-  padding: 10px 16px;
+  padding: 6px 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -21,50 +21,49 @@
 .header-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .file-icon {
-  font-size: 16px;
+  font-size: 14px;
+  opacity: 0.7;
 }
 
 .file-name {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   color: #cccccc;
 }
 
 .header-actions {
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
 .save-btn {
-  background: linear-gradient(135deg, #007acc 0%, #005a9e 100%);
+  background-color: #007acc;
   border: none;
-  border-radius: 4px;
+  border-radius: 2px;
   color: white;
-  padding: 6px 12px;
-  font-size: 12px;
+  padding: 4px 10px;
+  font-size: 11px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.15s ease;
 }
 
 .save-btn:hover {
-  background: linear-gradient(135deg, #0099ff 0%, #007acc 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 122, 204, 0.3);
+  background-color: #005a9e;
 }
 
 .json-editor-content {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 16px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   min-height: 0; /* Importante para o scroll funcionar com flexbox */
   /* Scrollbar para Firefox */
   scrollbar-width: thin;

@@ -187,5 +187,21 @@ export class TestFinderComponent implements OnInit, OnDestroy {
       alert(`Erro ao executar testes: ${error.message}`);
     }
   }
+
+  /**
+   * Gera teste para os arquivos selecionados
+   * Por enquanto, apenas loga os arquivos selecionados
+   */
+  generateTest() {
+    const selected = Array.from(this.selectedTests);
+    
+    if (selected.length === 0) {
+      console.log('Nenhum arquivo selecionado para gerar teste');
+      return;
+    }
+
+    console.log('Gerar teste para os seguintes arquivos:', selected);
+    // TODO: Implementar lógica de geração de teste
+  }
 }
 

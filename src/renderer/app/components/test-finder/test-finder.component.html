@@ -1,13 +1,15 @@
 <div class="test-finder">
   <div class="test-finder-header">
     <h3>🧪 Arquivos de Teste</h3>
-    <button 
-      class="refresh-btn"
-      (click)="loadTestFiles()"
-      [disabled]="loading"
-      title="Atualizar lista">
-      {{ loading ? '⏳' : '🔄' }}
-    </button>
+    <div class="header-actions">
+      <button 
+        class="refresh-btn"
+        (click)="loadTestFiles()"
+        [disabled]="loading"
+        title="Atualizar lista">
+        {{ loading ? '⏳' : '🔄' }}
+      </button>
+    </div>
   </div>
 
   <div class="test-finder-content">
@@ -29,19 +31,58 @@
 
     <!-- Test files list -->
     <div class="test-files-list" *ngIf="!loading && !error && testFiles.length > 0">
+      <!-- Selection controls -->
+      <div class="selection-controls">
+        <button 
+          class="select-btn" 
+          (click)="selectAll()"
+          [disabled]="testFiles.length === 0"
+          title="Selecionar todos">
+          Selecionar Todos
+        </button>
+        <button 
+          class="select-btn" 
+          (click)="deselectAll()"
+          [disabled]="selectedTests.size === 0"
+          title="Desmarcar todos">
+          Desmarcar Todos
+        </button>
+        <span class="selection-count" *ngIf="selectedTests.size > 0">
+          {{ selectedTests.size }} selecionado(s)
+        </span>
+      </div>
+
+      <!-- Files with checkboxes -->
       <div 
         class="test-file-item"
         *ngFor="let file of testFiles"
-        (click)="openTestFile(file)"
-        title="Clique para abrir">
+        [class.selected]="isTestSelected(file)">
+        <input 
+          type="checkbox"
+          class="test-file-checkbox"
+          [checked]="isTestSelected(file)"
+          (change)="toggleTestSelection(file, $event)"
+          (click)="$event.stopPropagation()">
         <span class="test-file-icon">🧪</span>
-        <span class="test-file-name">{{ getFileName(file) }}</span>
+        <span 
+          class="test-file-name" 
+          (click)="openTestFile(file, $event)"
+          title="Clique para abrir">
+          {{ getFileName(file) }}
+        </span>
       </div>
     </div>
 
-    <!-- Summary -->
+    <!-- Summary and Actions -->
     <div class="test-finder-summary" *ngIf="!loading && testFiles.length > 0">
       <p>{{ testFiles.length }} arquivo(s) de teste encontrado(s)</p>
+      <button 
+        class="generate-test-btn"
+        (click)="generateTest()"
+        [disabled]="selectedTests.size === 0"
+        title="Gerar teste para os arquivos selecionados">
+        ✨ Gerar Teste
+      </button>
     </div>
   </div>
 </div>

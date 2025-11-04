@@ -3,7 +3,7 @@
   flex-direction: column;
   height: 100vh;
   width: 100vw;
-  background-color: #1e1e1e;
+  background-color: var(--color-bg-primary);
   overflow: hidden;
 }
 
@@ -24,7 +24,7 @@ app-activity-bar {
 .app-container > app-status-bar {
   flex-shrink: 0;
   order: 999;
-  z-index: 100;
+  z-index: var(--z-index-dropdown);
   position: relative;
 }
 
@@ -36,18 +36,18 @@ app-activity-bar {
 .sidebar {
   width: 300px;
   flex: 0 0 300px;
-  background-color: #252526;
-  border-right: 1px solid #3e3e42;
+  background-color: var(--color-bg-secondary);
+  border-right: var(--border-width-thin) solid var(--color-border-primary);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
 }
 
 .sidebar-placeholder {
-  padding: 40px 20px;
+  padding: var(--spacing-7xl) var(--spacing-4xl);
   text-align: center;
-  color: #858585;
-  font-size: 14px;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xl);
 }
 
 .main-content {
@@ -64,14 +64,12 @@ app-activity-bar {
 }
 
 .editor-area {
-  /* flex: 1;
-  display: flex; */
   overflow: hidden;
   min-width: 0;
   min-height: 0;
   width: 100%;
   height: 100%;
-  transition: height 0.2s ease;
+  transition: height var(--transition-slow) var(--transition-ease);
 }
 
 .editor-area.with-terminal {
@@ -97,7 +95,7 @@ app-activity-bar {
   min-width: 0;
   min-height: 0;
   overflow: hidden;
-  border-right: 1px solid #3e3e42;
+  border-right: var(--border-width-thin) solid var(--color-border-primary);
   display: flex;
   flex-direction: column;
 }
@@ -131,33 +129,32 @@ app-activity-bar {
 .terminal-panel {
   height: 300px;
   flex: 0 0 300px;
-  border-top: 1px solid #3e3e42;
-  background-color: #1e1e1e;
+  border-top: var(--border-width-thin) solid var(--color-border-primary);
+  background-color: var(--color-bg-primary);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
 }
-
 
 .empty-state {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #1e1e1e;
+  background-color: var(--color-bg-primary);
 }
 
 .empty-editor {
   text-align: center;
-  color: #858585;
+  color: var(--color-text-secondary);
 }
 
 .empty-editor h2 {
-  margin-bottom: 10px;
-  color: #cccccc;
+  margin-bottom: var(--spacing-xl);
+  color: var(--color-text-primary);
 }
 
 .empty-editor p {
-  font-size: 14px;
+  font-size: var(--font-size-xl);
 }
 

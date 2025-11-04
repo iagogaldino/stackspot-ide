@@ -14,6 +14,7 @@ import { TestPromptComponent } from './components/test-prompt/test-prompt.compon
 import { TabsService } from './services/tabs.service';
 import { WorkspaceService } from './services/workspace.service';
 import { ExtensionService } from './services/extension.service';
+import { TerminalVisibilityService } from './services/terminal-visibility.service';
 import { ResizableDirective } from './directives/resizable.directive';
 import { Subscription } from 'rxjs';
 
@@ -37,6 +38,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private tabsService: TabsService,
     private workspaceService: WorkspaceService,
     private extensionService: ExtensionService,
+    private terminalVisibilityService: TerminalVisibilityService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -59,6 +61,12 @@ export class AppComponent implements OnInit, OnDestroy {
           this.cdr.detectChanges();
         }
       }
+    });
+
+    // Escutar solicitações para abrir o terminal
+    this.terminalVisibilityService.showTerminal$.subscribe(show => {
+      this.showTerminal = show;
+      this.cdr.detectChanges();
     });
   }
 

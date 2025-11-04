@@ -26,6 +26,15 @@
           {{ showMarkdownPreview ? '📄' : '👁️' }}
         </button>
       </div>
+      <!-- Botões para Testes -->
+      <div *ngIf="isTestFile()">
+        <button 
+          class="toggle-editor-btn" 
+          (click)="toggleTestVisualEditor()"
+          [title]="showTestVisualEditor ? 'Ver código' : 'Ver interface visual'">
+          {{ showTestVisualEditor ? '📄' : '🧪' }}
+        </button>
+      </div>
     </div>
   </div>
   
@@ -44,9 +53,18 @@
     [markdownContent]="markdownContent">
   </app-markdown-preview>
   
+  <!-- Editor Visual de Testes -->
+  <app-test-visual-editor
+    *ngIf="showTestVisualEditor && testFileContent && filePath"
+    [testFileContent]="testFileContent"
+    [filePath]="filePath"
+    (dataChanged)="onTestFileChanged($event)"
+    (errorOccurred)="showTestVisualEditor = false">
+  </app-test-visual-editor>
+  
   <!-- Monaco Editor (padrão) -->
   <div 
-    [hidden]="showVisualEditor || showMarkdownPreview"
+    [hidden]="showVisualEditor || showMarkdownPreview || showTestVisualEditor"
     *ngIf="filePath"
     #editorContainer 
     class="monaco-editor" 

@@ -1,18 +1,18 @@
 .json-field {
   background-color: #2d2d30;
   border: 1px solid #3e3e42;
-  border-radius: 6px;
-  padding: 16px;
+  border-radius: 3px;
+  padding: 10px 12px;
 }
 
 .simple-field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .field-label {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
   color: #cccccc;
 }
@@ -20,12 +20,12 @@
 .field-input {
   background-color: #1e1e1e;
   border: 1px solid #3e3e42;
-  border-radius: 4px;
-  padding: 8px 12px;
+  border-radius: 2px;
+  padding: 5px 10px;
   color: #cccccc;
-  font-size: 13px;
+  font-size: 11px;
   font-family: 'Consolas', 'Courier New', monospace;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .field-input:focus {

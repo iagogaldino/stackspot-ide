@@ -9,34 +9,35 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
+  padding: 6px 10px;
   background-color: #2d2d30;
   border-bottom: 1px solid #3e3e42;
 }
 
 .test-prompt-header h4 {
   margin: 0;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: #cccccc;
 }
 
 .test-file-name {
-  font-size: 11px;
+  font-size: 10px;
   color: #858585;
   max-width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  opacity: 0.8;
 }
 
 .test-prompt-messages {
   flex: 1;
   overflow-y: auto;
-  padding: 12px;
+  padding: 8px 10px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   min-height: 0;
 }
 
@@ -66,26 +67,26 @@
 }
 
 .message-content {
-  padding: 8px 12px;
-  border-radius: 6px;
+  padding: 6px 10px;
+  border-radius: 3px;
   word-wrap: break-word;
 }
 
 .user-message .message-content {
   background-color: #007acc;
   color: #ffffff;
-  border-bottom-right-radius: 3px;
+  border-bottom-right-radius: 2px;
 }
 
 .assistant-message .message-content {
   background-color: #2d2d30;
   color: #cccccc;
   border: 1px solid #3e3e42;
-  border-bottom-left-radius: 3px;
+  border-bottom-left-radius: 2px;
 }
 
 .message-text {
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1.4;
   white-space: pre-wrap;
 }

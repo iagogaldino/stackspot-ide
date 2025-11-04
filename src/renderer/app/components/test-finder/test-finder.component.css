@@ -22,6 +22,12 @@
   color: #cccccc;
 }
 
+.header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 .refresh-btn {
   background: transparent;
   border: none;
@@ -70,36 +76,93 @@
 .test-files-list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
+}
+
+.selection-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  margin-bottom: 2px;
+}
+
+.select-btn {
+  background: transparent;
+  color: #858585;
+  border: none;
+  padding: 2px 6px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 10px;
+  transition: all 0.15s;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+}
+
+.select-btn:hover:not(:disabled) {
+  color: #cccccc;
+  text-decoration-color: #007acc;
+}
+
+.select-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.selection-count {
+  margin-left: auto;
+  font-size: 10px;
+  color: #858585;
+  opacity: 0.8;
 }
 
 .test-file-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
+  gap: 6px;
+  padding: 4px 8px;
   cursor: pointer;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-  font-size: 13px;
+  border-radius: 2px;
+  transition: background-color 0.1s;
+  font-size: 12px;
 }
 
 .test-file-item:hover {
   background-color: #2a2d2e;
 }
 
-.test-file-icon {
-  font-size: 16px;
+.test-file-item.selected {
+  background-color: rgba(0, 122, 204, 0.1);
+}
+
+.test-file-item.selected:hover {
+  background-color: rgba(0, 122, 204, 0.15);
+}
+
+.test-file-checkbox {
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
   flex-shrink: 0;
+  margin: 0;
+  accent-color: #007acc;
+}
+
+.test-file-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+  opacity: 0.7;
 }
 
 .test-file-name {
   flex: 1;
-  font-weight: 500;
+  font-weight: 400;
   color: #cccccc;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  cursor: pointer;
 }
 
 .test-file-path {
@@ -112,11 +175,42 @@
 }
 
 .test-finder-summary {
-  padding: 12px 16px;
+  padding: 8px 12px;
   border-top: 1px solid #3e3e42;
   background-color: #2d2d30;
-  font-size: 11px;
+  font-size: 10px;
   color: #858585;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.test-finder-summary p {
+  margin: 0;
   text-align: center;
+  opacity: 0.8;
+}
+
+.generate-test-btn {
+  background-color: #007acc;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 500;
+  transition: background-color 0.15s;
+  width: 100%;
+}
+
+.generate-test-btn:hover:not(:disabled) {
+  background-color: #005a9e;
+}
+
+.generate-test-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  background-color: #3e3e42;
 }
 

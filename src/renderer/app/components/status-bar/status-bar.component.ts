@@ -21,15 +21,15 @@ import { CommonModule } from '@angular/common';
       display: flex;
       justify-content: space-between;
       align-items: center;
-      height: 22px;
-      background-color: #007acc;
-      color: #ffffff;
-      font-size: 12px;
-      padding: 0 8px;
-      border-top: 1px solid #005a9e;
+      height: var(--status-bar-height);
+      background-color: var(--color-status-bar);
+      color: var(--color-text-white);
+      font-size: var(--status-bar-font-size);
+      padding: 0 var(--status-bar-padding-x);
+      border-top: var(--border-width-thin) solid var(--color-status-bar-border);
       flex-shrink: 0;
       user-select: none;
-      z-index: 100;
+      z-index: var(--z-index-dropdown);
       position: relative;
     }
 
@@ -37,14 +37,14 @@ import { CommonModule } from '@angular/common';
     .status-bar-right {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: var(--spacing-2xl);
     }
 
     .status-item {
       display: flex;
       align-items: center;
       height: 100%;
-      padding: 0 4px;
+      padding: 0 var(--spacing-md);
       cursor: default;
     }
 

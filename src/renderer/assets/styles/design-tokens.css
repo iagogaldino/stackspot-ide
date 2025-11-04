@@ -1,0 +1,261 @@
+/* ============================================
+   DESIGN TOKENS - Sistema de Design Centralizado
+   ============================================
+   
+   Este arquivo contém todas as variáveis de design
+   do sistema. Para mudar tema, cores ou tamanhos,
+   edite apenas este arquivo.
+*/
+
+:root {
+  /* ============================================
+     Cores - Paleta Principal (Dark Theme)
+     ============================================ */
+  
+  /* Backgrounds */
+  --color-bg-primary: #1e1e1e;
+  --color-bg-secondary: #252526;
+  --color-bg-tertiary: #2d2d30;
+  --color-bg-hover: #2a2d2e;
+  --color-bg-active: #37373d;
+  --color-bg-selected: rgba(0, 122, 204, 0.15);
+  --color-bg-selected-hover: rgba(0, 122, 204, 0.2);
+  
+  /* Borders */
+  --color-border-primary: #3e3e42;
+  --color-border-hover: #007acc;
+  --color-border-focus: #007acc;
+  
+  /* Text Colors */
+  --color-text-primary: #cccccc;
+  --color-text-secondary: #858585;
+  --color-text-tertiary: #808080;
+  --color-text-disabled: rgba(204, 204, 204, 0.4);
+  --color-text-white: #ffffff;
+  
+  /* Accent Colors */
+  --color-accent-primary: #007acc;
+  --color-accent-primary-hover: #005a9e;
+  --color-accent-primary-active: #004a8e;
+  
+  /* Status Colors */
+  --color-success: #28a745;
+  --color-success-hover: #20c997;
+  --color-error: #dc3545;
+  --color-error-bg: #3a1d1d;
+  --color-error-border: #a12626;
+  --color-error-text: #f48771;
+  --color-warning: #ffc107;
+  
+  /* Test Status Colors */
+  --color-test-not-run: #858585;
+  --color-test-running: #ffc107;
+  --color-test-passed: #28a745;
+  --color-test-failed: #dc3545;
+  
+  /* Status Bar */
+  --color-status-bar: #007acc;
+  --color-status-bar-border: #005a9e;
+  
+  /* ============================================
+     Espaçamentos (Spacing)
+     ============================================ */
+  
+  --spacing-xs: 2px;
+  --spacing-sm: 4px;
+  --spacing-md: 6px;
+  --spacing-lg: 8px;
+  --spacing-xl: 10px;
+  --spacing-2xl: 12px;
+  --spacing-3xl: 16px;
+  --spacing-4xl: 20px;
+  --spacing-5xl: 24px;
+  --spacing-6xl: 30px;
+  --spacing-7xl: 40px;
+  
+  /* ============================================
+     Tipografia
+     ============================================ */
+  
+  --font-family-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-family-mono: 'Consolas', 'Courier New', monospace;
+  
+  /* Font Sizes */
+  --font-size-xs: 10px;
+  --font-size-sm: 11px;
+  --font-size-md: 12px;
+  --font-size-lg: 13px;
+  --font-size-xl: 14px;
+  --font-size-2xl: 16px;
+  --font-size-3xl: 18px;
+  --font-size-4xl: 20px;
+  --font-size-5xl: 24px;
+  --font-size-6xl: 36px;
+  
+  /* Font Weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-light: 300;
+  
+  /* Line Heights */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.4;
+  --line-height-relaxed: 1.5;
+  
+  /* ============================================
+     Bordas e Radius
+     ============================================ */
+  
+  --border-radius-xs: 1px;
+  --border-radius-sm: 2px;
+  --border-radius-md: 3px;
+  --border-radius-lg: 4px;
+  --border-radius-xl: 6px;
+  --border-radius-full: 50%;
+  
+  --border-width-thin: 1px;
+  --border-width-medium: 2px;
+  --border-width-thick: 3px;
+  
+  /* ============================================
+     Componentes - Tamanhos Padrão
+     ============================================ */
+  
+  /* Activity Bar */
+  --activity-bar-width: 48px;
+  --activity-bar-item-size: 42px;
+  --activity-bar-icon-size: 20px;
+  --activity-bar-indicator-width: 2px;
+  --activity-bar-indicator-height: 20px;
+  
+  /* Tabs */
+  --tabs-height: 32px;
+  --tabs-padding-x: 10px;
+  --tabs-padding-y: 4px;
+  --tabs-font-size: 11px;
+  --tabs-icon-size: 12px;
+  --tabs-close-btn-size: 16px;
+  --tabs-min-width: 100px;
+  --tabs-max-width: 220px;
+  
+  /* File Tree */
+  --file-tree-header-padding-y: 8px;
+  --file-tree-header-padding-x: 12px;
+  --file-tree-item-padding-y: 3px;
+  --file-tree-item-padding-x: 8px;
+  --file-tree-icon-size: 14px;
+  --file-tree-font-size: 12px;
+  
+  /* Headers */
+  --header-padding-y: 6px;
+  --header-padding-x: 12px;
+  --header-font-size: 12px;
+  --header-height: auto;
+  
+  /* Buttons */
+  --button-padding-y-sm: 2px;
+  --button-padding-x-sm: 6px;
+  --button-padding-y-md: 4px;
+  --button-padding-x-md: 10px;
+  --button-padding-y-lg: 6px;
+  --button-padding-x-lg: 12px;
+  --button-font-size-sm: 10px;
+  --button-font-size-md: 11px;
+  --button-font-size-lg: 12px;
+  --button-border-radius: 2px;
+  
+  /* Inputs */
+  --input-padding-y: 5px;
+  --input-padding-x: 10px;
+  --input-font-size: 11px;
+  --input-border-radius: 2px;
+  --input-height: auto;
+  
+  /* Cards/Panels */
+  --card-padding-y: 10px;
+  --card-padding-x: 12px;
+  --card-border-radius: 3px;
+  --card-gap: 6px;
+  
+  /* Status Bar */
+  --status-bar-height: 20px;
+  --status-bar-padding-x: 6px;
+  --status-bar-font-size: 11px;
+  
+  /* Terminal */
+  --terminal-header-padding-y: 4px;
+  --terminal-header-padding-x: 10px;
+  --terminal-header-font-size: 11px;
+  --terminal-content-padding: 6px;
+  
+  /* ============================================
+     Transições e Animações
+     ============================================ */
+  
+  --transition-fast: 0.1s;
+  --transition-normal: 0.15s;
+  --transition-slow: 0.2s;
+  --transition-ease: ease;
+  --transition-ease-in-out: ease-in-out;
+  
+  /* ============================================
+     Opacidades
+     ============================================ */
+  
+  --opacity-disabled: 0.4;
+  --opacity-hover: 0.7;
+  --opacity-active: 0.8;
+  --opacity-icon: 0.7;
+  
+  /* ============================================
+     Shadows
+     ============================================ */
+  
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.3);
+  
+  /* ============================================
+     Z-Index Layers
+     ============================================ */
+  
+  --z-index-base: 1;
+  --z-index-dropdown: 100;
+  --z-index-modal: 1000;
+  --z-index-tooltip: 2000;
+}
+
+/* ============================================
+   Tema Light (Para implementação futura)
+   ============================================ */
+
+[data-theme="light"] {
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f5f5f5;
+  --color-bg-tertiary: #e8e8e8;
+  --color-bg-hover: #e0e0e0;
+  --color-bg-active: #d0d0d0;
+  --color-bg-selected: rgba(0, 122, 204, 0.1);
+  
+  --color-border-primary: #d0d0d0;
+  
+  --color-text-primary: #333333;
+  --color-text-secondary: #666666;
+  --color-text-tertiary: #999999;
+}
+
+/* ============================================
+   Tema High Contrast (Para implementação futura)
+   ============================================ */
+
+[data-theme="high-contrast"] {
+  --color-bg-primary: #000000;
+  --color-bg-secondary: #1a1a1a;
+  --color-bg-tertiary: #333333;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #cccccc;
+  --color-border-primary: #666666;
+  --color-accent-primary: #00ffff;
+}
+

@@ -1,38 +1,38 @@
 .activity-bar {
-  width: 50px;
-  background-color: #2d2d30;
-  border-right: 1px solid #3e3e42;
+  width: var(--activity-bar-width);
+  background-color: var(--color-bg-tertiary);
+  border-right: var(--border-width-thin) solid var(--color-border-primary);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 8px 0;
-  gap: 4px;
+  padding: var(--spacing-md) 0;
+  gap: var(--spacing-xs);
 }
 
 .activity-item {
-  width: 44px;
-  height: 44px;
+  width: var(--activity-bar-item-size);
+  height: var(--activity-bar-item-size);
   background: none;
   border: none;
-  color: #858585;
-  font-size: 24px;
+  color: var(--color-text-secondary);
+  font-size: var(--activity-bar-icon-size);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
-  transition: all 0.2s;
+  border-radius: var(--border-radius-md);
+  transition: all var(--transition-normal);
   position: relative;
 }
 
 .activity-item:hover {
-  background-color: #3e3e42;
-  color: #cccccc;
+  background-color: var(--color-border-primary);
+  color: var(--color-text-primary);
 }
 
 .activity-item.active {
-  color: #ffffff;
-  background-color: #37373d;
+  color: var(--color-text-white);
+  background-color: var(--color-bg-active);
 }
 
 .activity-item.active::before {
@@ -41,13 +41,13 @@
   left: 0;
   top: 50%;
   transform: translateY(-50%);
-  width: 3px;
-  height: 24px;
-  background-color: #007acc;
-  border-radius: 0 2px 2px 0;
+  width: var(--activity-bar-indicator-width);
+  height: var(--activity-bar-indicator-height);
+  background-color: var(--color-accent-primary);
+  border-radius: 0 var(--border-radius-xs) var(--border-radius-xs) 0;
 }
 
 .activity-item.extensions.active {
-  color: #007acc;
+  color: var(--color-accent-primary);
 }
 

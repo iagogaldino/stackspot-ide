@@ -30,13 +30,27 @@
   overflow: hidden;
 }
 
+/* Garantir que o editor visual de testes tenha altura completa */
+.editor-container app-test-visual-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
 .editor-header {
   background-color: #2d2d30;
   border-bottom: 1px solid #3e3e42;
-  padding: 8px 15px;
-  font-size: 13px;
+  padding: 6px 12px;
+  font-size: 12px;
   color: #cccccc;
   flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .file-name {
@@ -45,26 +59,27 @@
 
 .editor-actions {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
 }
 
 .toggle-editor-btn,
 .config-btn {
-  background: rgba(255, 255, 255, 0.1);
+  background: transparent;
   border: 1px solid #3e3e42;
-  border-radius: 4px;
-  color: #cccccc;
-  padding: 4px 8px;
-  font-size: 14px;
+  border-radius: 2px;
+  color: #858585;
+  padding: 3px 8px;
+  font-size: 11px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .toggle-editor-btn:hover,
 .config-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background-color: #2d2d30;
   border-color: #007acc;
+  color: #cccccc;
 }
 
 .monaco-editor {

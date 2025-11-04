@@ -1,0 +1,280 @@
+<div class="test-visual-editor">
+  <div class="test-editor-header">
+    <h3>🧪 Editor Visual de Testes</h3>
+    <div class="header-actions">
+      <button 
+        class="run-test-btn" 
+        (click)="runTest()" 
+        [disabled]="isRunningTests"
+        title="Executar teste"
+        [class.loading]="isRunningTests">
+        {{ isRunningTests ? '⏳ Executando...' : '▶️ Executar Teste' }}
+      </button>
+      <button class="save-btn" (click)="saveTestFile()" title="Salvar alterações">
+        💾 Salvar
+      </button>
+    </div>
+  </div>
+
+  <div class="test-editor-content" *ngIf="structure && !hasError">
+    <!-- Seção de Imports -->
+    <div class="test-section">
+      <div class="section-header">
+        <h4>📦 Imports</h4>
+        <button class="add-btn" (click)="startNewImport()" *ngIf="!newImport">
+          ➕ Adicionar Import
+        </button>
+      </div>
+
+      <!-- Novo Import -->
+      <div class="edit-item" *ngIf="newImport">
+        <div class="edit-form">
+          <div class="form-group">
+            <label>Default Import:</label>
+            <input type="text" [(ngModel)]="newImport.defaultImport" placeholder="Component">
+          </div>
+          <div class="form-group">
+            <label>Named Imports:</label>
+            <div class="named-imports-list" *ngIf="newImport.namedImports">
+              <div class="named-import-item" *ngFor="let imp of newImport.namedImports; let i = index">
+                <input type="text" [(ngModel)]="newImport.namedImports![i]" placeholder="ImportName">
+                <button class="remove-btn" (click)="removeNamedImportFromNew(i)">✕</button>
+              </div>
+            </div>
+            <button class="small-btn" (click)="addNamedImportToNew()">➕ Adicionar</button>
+          </div>
+          <div class="form-group">
+            <label>Namespace Import:</label>
+            <input type="text" [(ngModel)]="newImport.namespaceImport" placeholder="* as X">
+          </div>
+          <div class="form-group">
+            <label>From:</label>
+            <input type="text" [(ngModel)]="newImport.from" placeholder="@angular/core" required>
+          </div>
+          <div class="form-actions">
+            <button class="save-small-btn" (click)="addNewImport()">✓ Salvar</button>
+            <button class="cancel-btn" (click)="cancelNewImport()">✕ Cancelar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de Imports -->
+      <div class="imports-list">
+        <div class="import-item" *ngFor="let imp of structure.imports">
+          <div class="import-content" *ngIf="editingImport?.id !== imp.id">
+            <span class="import-text">{{ getImportDisplay(imp) }}</span>
+            <div class="item-actions">
+              <button class="edit-btn" (click)="startEditingImport(imp)">✏️</button>
+              <button class="delete-btn" (click)="deleteImport(imp)">🗑️</button>
+            </div>
+          </div>
+          
+          <!-- Edição de Import -->
+          <div class="edit-form" *ngIf="editingImport?.id === imp.id && editingImport">
+            <div class="form-group">
+              <label>Default Import:</label>
+              <input type="text" [(ngModel)]="editingImport.defaultImport" placeholder="Component">
+            </div>
+            <div class="form-group">
+              <label>Named Imports:</label>
+              <div class="named-imports-list" *ngIf="editingImport.namedImports">
+                <div class="named-import-item" *ngFor="let namedImp of editingImport.namedImports; let i = index">
+                  <input type="text" [(ngModel)]="editingImport.namedImports![i]" placeholder="ImportName">
+                  <button class="remove-btn" (click)="removeNamedImport(editingImport, i)">✕</button>
+                </div>
+              </div>
+              <button class="small-btn" (click)="addNamedImport(editingImport!)">➕ Adicionar</button>
+            </div>
+            <div class="form-group">
+              <label>Namespace Import:</label>
+              <input type="text" [(ngModel)]="editingImport.namespaceImport" placeholder="* as X">
+            </div>
+            <div class="form-group">
+              <label>From:</label>
+              <input type="text" [(ngModel)]="editingImport.from" placeholder="@angular/core" required>
+            </div>
+            <div class="form-actions">
+              <button class="save-small-btn" (click)="saveImport(imp)">✓ Salvar</button>
+              <button class="cancel-btn" (click)="cancelEditingImport()">✕ Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seção de Describe Blocks -->
+    <div class="test-section">
+      <div class="section-header">
+        <h4>📋 Describe Blocks</h4>
+        <button class="add-btn" (click)="startNewDescribe()" *ngIf="!newDescribe">
+          ➕ Adicionar Describe
+        </button>
+      </div>
+
+      <!-- Novo Describe -->
+      <div class="edit-item" *ngIf="newDescribe">
+        <div class="edit-form">
+          <div class="form-group">
+            <label>Nome do Describe:</label>
+            <input type="text" [(ngModel)]="newDescribe.name" placeholder="Component Name" required>
+          </div>
+          <div class="form-group">
+            <label>BeforeEach (opcional):</label>
+            <textarea [(ngModel)]="newDescribe.beforeEach" rows="3" placeholder="fixture = TestBed.createComponent(...);"></textarea>
+          </div>
+          <div class="form-group">
+            <label>AfterEach (opcional):</label>
+            <textarea [(ngModel)]="newDescribe.afterEach" rows="3" placeholder="fixture.destroy();"></textarea>
+          </div>
+          <div class="form-group">
+            <label>BeforeAll (opcional):</label>
+            <textarea [(ngModel)]="newDescribe.beforeAll" rows="3" placeholder="// Setup antes de todos os testes"></textarea>
+          </div>
+          <div class="form-group">
+            <label>AfterAll (opcional):</label>
+            <textarea [(ngModel)]="newDescribe.afterAll" rows="3" placeholder="// Cleanup após todos os testes"></textarea>
+          </div>
+          <div class="form-actions">
+            <button class="save-small-btn" (click)="addNewDescribe()">✓ Salvar</button>
+            <button class="cancel-btn" (click)="cancelNewDescribe()">✕ Cancelar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de Describe Blocks -->
+      <div class="describes-list">
+        <div class="describe-item" *ngFor="let describe of structure.describeBlocks">
+          <div class="describe-header">
+            <span class="describe-name">{{ getDescribeDisplay(describe) }}</span>
+            <div class="item-actions">
+              <button class="edit-btn" (click)="startEditingDescribe(describe)">✏️</button>
+              <button class="delete-btn" (click)="deleteDescribe(describe)">🗑️</button>
+            </div>
+          </div>
+
+          <!-- Edição de Describe -->
+          <div class="edit-form" *ngIf="editingDescribe?.id === describe.id && editingDescribe">
+            <div class="form-group">
+              <label>Nome:</label>
+              <input type="text" [(ngModel)]="editingDescribe.name" required>
+            </div>
+            <div class="form-group">
+              <label>BeforeEach:</label>
+              <textarea [(ngModel)]="editingDescribe.beforeEach" rows="4" placeholder="waitForAsync(() => {&#10;  // código aqui&#10;})"></textarea>
+            </div>
+            <div class="form-group">
+              <label>AfterEach:</label>
+              <textarea [(ngModel)]="editingDescribe.afterEach" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+              <label>BeforeAll:</label>
+              <textarea [(ngModel)]="editingDescribe.beforeAll" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+              <label>AfterAll:</label>
+              <textarea [(ngModel)]="editingDescribe.afterAll" rows="4"></textarea>
+            </div>
+            <div class="form-actions">
+              <button class="save-small-btn" (click)="saveDescribe(describe)">✓ Salvar</button>
+              <button class="cancel-btn" (click)="cancelEditingDescribe()">✕ Cancelar</button>
+            </div>
+          </div>
+
+          <!-- It Blocks dentro do Describe -->
+          <div class="it-blocks-section">
+            <div class="section-header-small">
+              <span>Testes ({{ describe.itBlocks.length }})</span>
+              <button class="add-small-btn" (click)="startNewIt(describe)" *ngIf="!(newIt && editingDescribe?.id === describe.id)">
+                ➕ Adicionar Teste
+              </button>
+            </div>
+
+            <!-- Novo It Block -->
+            <div class="edit-item" *ngIf="newIt && editingDescribe && editingDescribe.id === describe.id">
+              <div class="edit-form">
+                <div class="form-group">
+                  <label>Nome do Teste:</label>
+                  <input type="text" [(ngModel)]="newIt.name" placeholder="should create" required>
+                </div>
+                <div class="form-group">
+                  <label>Tipo:</label>
+                  <select [(ngModel)]="newIt.isTest">
+                    <option [value]="false">it()</option>
+                    <option [value]="true">test()</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Corpo do Teste:</label>
+                  <textarea [(ngModel)]="newIt.body" rows="5" placeholder="expect(component).toBeTruthy();"></textarea>
+                </div>
+                <div class="form-actions">
+                  <button class="save-small-btn" (click)="addNewIt()">✓ Salvar</button>
+                  <button class="cancel-btn" (click)="cancelNewIt()">✕ Cancelar</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lista de It Blocks -->
+            <div class="it-blocks-list">
+              <div class="it-item" 
+                   *ngFor="let it of describe.itBlocks"
+                   [class.test-not-run]="!it.status || it.status === 'not-run'"
+                   [class.test-running]="it.status === 'running'"
+                   [class.test-passed]="it.status === 'passed'"
+                   [class.test-failed]="it.status === 'failed'">
+                <div class="it-content" *ngIf="editingIt?.id !== it.id">
+                  <span class="it-name">
+                    <span class="test-status-icon">
+                      <span *ngIf="!it.status || it.status === 'not-run'">⚪</span>
+                      <span *ngIf="it.status === 'running'">🔄</span>
+                      <span *ngIf="it.status === 'passed'">✅</span>
+                      <span *ngIf="it.status === 'failed'">❌</span>
+                    </span>
+                    {{ getItDisplay(it) }}
+                    <span class="test-error" *ngIf="it.status === 'failed' && it.errorMessage" title="{{ it.errorMessage }}">
+                      ⚠️
+                    </span>
+                  </span>
+                  <div class="item-actions">
+                    <button class="edit-btn" (click)="startEditingIt(describe, it)">✏️</button>
+                    <button class="delete-btn" (click)="deleteIt(describe, it)">🗑️</button>
+                  </div>
+                </div>
+
+                <!-- Edição de It Block -->
+                <div class="edit-form" *ngIf="editingIt?.id === it.id && editingDescribe?.id === describe.id && editingIt && editingDescribe">
+                  <div class="form-group">
+                    <label>Nome:</label>
+                    <input type="text" [(ngModel)]="editingIt.name" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Tipo:</label>
+                    <select [(ngModel)]="editingIt.isTest">
+                      <option [value]="false">it()</option>
+                      <option [value]="true">test()</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Corpo:</label>
+                    <textarea [(ngModel)]="editingIt.body" rows="5"></textarea>
+                  </div>
+                  <div class="form-actions">
+                    <button class="save-small-btn" (click)="saveIt(describe, it)">✓ Salvar</button>
+                    <button class="cancel-btn" (click)="cancelEditingIt()">✕ Cancelar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Erro -->
+  <div class="error-container" *ngIf="hasError">
+    <p class="error-message">❌ {{ errorMessage || 'Erro ao processar arquivo de teste' }}</p>
+    <p class="error-hint">Tente visualizar o código diretamente.</p>
+  </div>
+</div>
+
