@@ -51,12 +51,14 @@ export class TerminalComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
         background: '#1e1e1e',
         foreground: '#cccccc',
         cursor: '#ffffff',
+        cursorAccent: '#1e1e1e',
         selectionBackground: '#264f78'
       },
       fontSize: 13,
       fontFamily: 'Consolas, "Courier New", monospace',
       cursorBlink: true,
       cursorStyle: 'block',
+      cursorWidth: 1,
       disableStdin: false, // Garantir que input está habilitado
       allowProposedApi: true,
       convertEol: true,
@@ -70,16 +72,18 @@ export class TerminalComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
     // Abrir terminal no container
     this.terminal.open(this.terminalContainer.nativeElement);
     
-    // Ajustar tamanho e focar
-    setTimeout(() => {
-      this.fitAddon?.fit();
-      // Focar o terminal para aceitar input
-      if (this.terminal) {
-        this.terminal.focus();
-        // Forçar renderização inicial
-        this.terminal.refresh(0, this.terminal.rows - 1);
-      }
-    }, 100);
+      // Ajustar tamanho e focar
+      setTimeout(() => {
+        this.fitAddon?.fit();
+        // Focar o terminal para aceitar input
+        if (this.terminal) {
+          this.terminal.focus();
+          // Marcar container como focado para CSS
+          this.terminalContainer.nativeElement.classList.add('focused');
+          // Forçar renderização inicial do cursor
+          this.terminal.refresh(0, this.terminal.rows - 1);
+        }
+      }, 100);
 
     // Conectar ao serviço de terminal
     this.terminalService.connect(this.terminal);
@@ -87,10 +91,51 @@ export class TerminalComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
     // Garantir que o terminal está focado e pode receber input
     setTimeout(() => {
       this.terminal?.focus();
+      
       // Adicionar listener para focar quando clicar no terminal
-      this.terminalContainer.nativeElement.addEventListener('click', () => {
-        this.terminal?.focus();
+      const containerElement = this.terminalContainer.nativeElement;
+      
+      const focusTerminal = () => {
+        if (this.terminal) {
+          this.terminal.focus();
+          containerElement.classList.add('focused');
+          // Garantir que o cursor está piscando
+          this.terminal.options.cursorBlink = true;
+          // Forçar atualização do cursor
+          this.terminal.refresh(0, this.terminal.rows - 1);
+        }
+      };
+      
+      containerElement.addEventListener('click', focusTerminal);
+      
+      // Também focar quando passar o mouse sobre o terminal (se não houver outro elemento focado)
+      containerElement.addEventListener('mouseenter', () => {
+        if (this.terminal && !containerElement.classList.contains('focused')) {
+          focusTerminal();
+        }
       });
+      
+      // Escutar eventos de foco do DOM diretamente
+      if (this.terminal) {
+        // Encontrar o elemento textarea do terminal (usado para input)
+        const terminalElement = containerElement.querySelector('.xterm');
+        
+        if (terminalElement) {
+          // Quando o terminal ganha foco
+          terminalElement.addEventListener('focus', () => {
+            containerElement.classList.add('focused');
+            if (this.terminal) {
+              this.terminal.options.cursorBlink = true;
+              this.terminal.refresh(0, this.terminal.rows - 1);
+            }
+          });
+          
+          // Quando o terminal perde foco
+          terminalElement.addEventListener('blur', () => {
+            containerElement.classList.remove('focused');
+          });
+        }
+      }
     }, 200);
 
     // Se temos um caminho de projeto, definir como diretório de trabalho

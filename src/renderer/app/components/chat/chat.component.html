@@ -40,8 +40,19 @@
       [class.user-message]="message.role === 'user'"
       [class.assistant-message]="message.role === 'assistant'">
       <div class="message-content">
-        <!-- Mostrar conteúdo da mensagem -->
-        <div *ngIf="message.content" class="message-text">{{ message.content }}</div>
+        <!-- Mostrar conteúdo da mensagem com efeito de digitação em código -->
+        <div *ngIf="message.content" class="message-text">
+          <ng-container *ngFor="let part of renderMessageContent(message)">
+            <div *ngIf="part.type === 'text'" class="message-text-part">{{ part.content }}</div>
+            <app-code-block 
+              *ngIf="part.type === 'code'" 
+              [code]="part.content" 
+              [language]="part.language || 'typescript'"
+              [enableTyping]="message.role === 'assistant'"
+              [typingSpeed]="15">
+            </app-code-block>
+          </ng-container>
+        </div>
         <!-- Se houver arquivo criado, mostrar badge clicável -->
         <div *ngIf="message.createdFile" class="created-file-badge-container">
           <div class="created-file-badge" (click)="openCreatedFile(message.createdFile!)" title="Clique para abrir o arquivo">
@@ -59,8 +70,23 @@
         <app-mini-terminal
           *ngIf="message.testExecution?.isRunning"
           [command]="message.testExecution!.command"
-          [onClose]="getCloseTestTerminalCallback(i)">
+          [onClose]="getCloseTestTerminalCallback(i)"
+          [onTestFailed]="getTestFailedCallback(i)">
         </app-mini-terminal>
+        
+        <!-- Botão para gerar teste corrigido quando falhar -->
+        <div *ngIf="message.testExecution?.hasFailed && message.testExecution?.errorDetails" class="test-failure-container">
+          <div class="test-failure-message">
+            <span class="failure-icon">❌</span>
+            <span class="failure-text">Teste falhou</span>
+          </div>
+          <button 
+            class="fix-test-button"
+            (click)="generateFixedTest(i, message.testExecution!.errorDetails!)"
+            title="Gerar teste corrigido baseado no erro">
+            🔧 Gerar teste corrigido
+          </button>
+        </div>
         <div class="message-time">{{ formatTime(message.timestamp) }}</div>
       </div>
     </div>

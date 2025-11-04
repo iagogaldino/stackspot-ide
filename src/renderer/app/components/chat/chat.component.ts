@@ -7,23 +7,34 @@ import { TerminalService } from '../../services/terminal.service';
 import { TestFrameworkService } from '../../services/test-framework.service';
 import { ChatMessage, AgentRequestOptions } from '../../services/agent-provider.interface';
 import { MiniTerminalComponent } from './mini-terminal.component';
+import { CodeBlockComponent } from './code-block.component';
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
   createdFile?: string; // Caminho do arquivo criado (para badges)
+  parsedContent?: {
+    text: string;
+    codeBlocks: Array<{ code: string; language: string; index: number }>;
+  }; // Conteúdo parseado para exibir código com efeito de digitação
   testExecution?: {
     command: string;
     framework: string;
     isRunning: boolean;
+    hasFailed?: boolean; // Indica se o teste falhou
+    errorDetails?: {
+      testFile: string;
+      errorMessage: string;
+      output: string;
+    }; // Detalhes do erro quando o teste falha
   }; // Informações sobre execução de teste
 }
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, MiniTerminalComponent],
+  imports: [CommonModule, FormsModule, MiniTerminalComponent, CodeBlockComponent],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
 })
@@ -305,9 +316,14 @@ export class ChatComponent implements OnInit, AfterViewInit, OnChanges {
     this.agentService.sendMessage(this.conversationHistory, options).subscribe({
       next: (response) => {
         const assistantMessage = response.content;
+        
+        // Parsear mensagem para extrair blocos de código
+        const parsedContent = this.parseMessageContent(assistantMessage);
+        
         this.messages.push({
           role: 'assistant',
           content: assistantMessage,
+          parsedContent: parsedContent,
           timestamp: new Date()
         });
         
@@ -485,9 +501,14 @@ Instruções:
         this.agentService.sendMessage(testHistory, options).subscribe({
           next: (response) => {
             const assistantMessage = response.content;
+            
+            // Parsear mensagem para extrair blocos de código
+            const parsedContent = this.parseMessageContent(assistantMessage);
+            
             this.messages.push({
               role: 'assistant',
               content: assistantMessage,
+              parsedContent: parsedContent,
               timestamp: new Date()
             });
             
@@ -649,17 +670,21 @@ Instruções:
         const command = frameworkInfo.testFileCommand(filePath, projectPath);
         
         // Adicionar mensagem com mini terminal
+        // Salvar o caminho completo do arquivo para referência futura
         const testMessage: Message = {
           role: 'assistant',
-          content: '',
+          content: `Executando teste: ${command}`,
           timestamp: new Date(),
+          createdFile: filePath, // Salvar caminho do arquivo de teste para referência
           testExecution: {
             command: command,
             framework: frameworkInfo.framework,
-            isRunning: true
+            isRunning: true,
+            hasFailed: false
           }
         };
         
+        const messageIndex = this.messages.length;
         this.messages.push(testMessage);
         this.scrollToBottom();
         
@@ -744,6 +769,342 @@ Instruções:
    */
   getCloseTestTerminalCallback(messageIndex: number): () => void {
     return () => this.closeTestTerminal(messageIndex);
+  }
+
+  getTestFailedCallback(messageIndex: number): (errorDetails: { testFile: string; errorMessage: string; output: string }) => void {
+    return (errorDetails) => {
+      if (this.messages[messageIndex]?.testExecution) {
+        // Tentar usar o arquivo criado originalmente se disponível
+        // Procurar mensagens anteriores que criaram o arquivo de teste
+        let actualTestFile = errorDetails.testFile;
+        
+        // Procurar na mensagem atual ou anteriores por createdFile
+        for (let i = messageIndex; i >= 0; i--) {
+          if (this.messages[i]?.createdFile && 
+              (this.messages[i].createdFile!.includes('.spec.') || this.messages[i].createdFile!.includes('.test.'))) {
+            actualTestFile = this.messages[i].createdFile!;
+            break;
+          }
+        }
+        
+        // Se ainda não encontrou, tentar construir o caminho completo
+        if (actualTestFile === errorDetails.testFile && this.projectPath) {
+          const separator = this.projectPath.includes('\\') ? '\\' : '/';
+          let testFile = errorDetails.testFile;
+          
+          // Normalizar separadores
+          testFile = testFile.replace(/\//g, separator).replace(/\\/g, separator);
+          
+          // Se não é caminho absoluto, construir
+          if (!testFile.includes(':') && !testFile.startsWith(this.projectPath)) {
+            actualTestFile = `${this.projectPath}${separator}${testFile}`;
+          } else {
+            actualTestFile = testFile;
+          }
+        }
+        
+        this.messages[messageIndex].testExecution!.hasFailed = true;
+        this.messages[messageIndex].testExecution!.errorDetails = {
+          testFile: actualTestFile,
+          errorMessage: errorDetails.errorMessage,
+          output: errorDetails.output
+        };
+        this.messages[messageIndex].testExecution!.isRunning = false;
+        this.scrollToBottom();
+      }
+    };
+  }
+
+  /**
+   * Gera um teste corrigido baseado no erro
+   */
+  generateFixedTest(messageIndex: number, errorDetails: { testFile: string; errorMessage: string; output: string }) {
+    if (!this.projectPath || !this.agentService.isConfigured()) {
+      this.messages.push({
+        role: 'assistant',
+        content: 'Por favor, configure a API key primeiro para gerar testes corrigidos.',
+        timestamp: new Date()
+      });
+      return;
+    }
+
+    // Usar o caminho do arquivo de teste já processado
+    let testFile = errorDetails.testFile;
+    
+    // Garantir que o caminho está correto
+    if (!testFile.includes(':') && !testFile.startsWith('/') && this.projectPath) {
+      // É um caminho relativo, construir caminho completo
+      const separator = this.projectPath.includes('\\') ? '\\' : '/';
+      testFile = testFile.replace(/\//g, separator).replace(/\\/g, separator);
+      
+      // Se não começa com projectPath, adicionar
+      if (!testFile.startsWith(this.projectPath)) {
+        // Remover separadores duplicados
+        testFile = `${this.projectPath}${separator}${testFile.replace(/^[\/\\]+/, '')}`;
+      }
+    }
+    
+    const errorMessage = errorDetails.errorMessage;
+    const output = errorDetails.output;
+
+    // Adicionar mensagem indicando que está gerando correção
+    this.messages.push({
+      role: 'user',
+      content: `Corrigir teste que falhou: ${testFile}`,
+      timestamp: new Date()
+    });
+
+    this.isTyping = true;
+    this.scrollToBottom();
+
+    // Ler o arquivo de teste atual
+    this.fileService.readFile(testFile).subscribe({
+      next: (testContent) => {
+        // Ler o arquivo fonte se possível
+        const sourceFile = testFile.replace('.spec.ts', '.ts').replace('.test.ts', '.ts');
+        let sourceContent = '';
+        
+        this.fileService.readFile(sourceFile).subscribe({
+          next: (content) => {
+            sourceContent = content;
+            this.sendTestFixRequest(testFile, testContent, sourceContent, errorMessage, output);
+          },
+          error: () => {
+            // Se não conseguir ler o arquivo fonte, continuar sem ele
+            this.sendTestFixRequest(testFile, testContent, '', errorMessage, output);
+          }
+        });
+      },
+      error: (error) => {
+        this.isTyping = false;
+        
+        // Tentar encontrar o arquivo usando createdFile das mensagens anteriores
+        let alternativePath = testFile;
+        let foundAlternative = false;
+        
+        // Procurar em todas as mensagens pelo arquivo criado
+        for (let i = this.messages.length - 1; i >= 0; i--) {
+          if (this.messages[i]?.createdFile && 
+              (this.messages[i].createdFile!.includes('.spec.') || this.messages[i].createdFile!.includes('.test.'))) {
+            alternativePath = this.messages[i].createdFile!;
+            foundAlternative = true;
+            break;
+          }
+        }
+        
+        // Se encontrou um caminho alternativo, tentar novamente
+        if (foundAlternative && alternativePath !== testFile) {
+          this.fileService.readFile(alternativePath).subscribe({
+            next: (testContent) => {
+              const sourceFile = alternativePath.replace('.spec.ts', '.ts').replace('.test.ts', '.ts');
+              this.fileService.readFile(sourceFile).subscribe({
+                next: (content) => {
+                  this.sendTestFixRequest(alternativePath, testContent, content, errorMessage, output);
+                },
+                error: () => {
+                  this.sendTestFixRequest(alternativePath, testContent, '', errorMessage, output);
+                }
+              });
+            },
+            error: (err) => {
+              this.messages.push({
+                role: 'assistant',
+                content: `Erro ao ler arquivo de teste.\nTentado: ${testFile}\nAlternativa: ${alternativePath}\nErro: ${err.message || 'Arquivo não encontrado'}`,
+                timestamp: new Date()
+              });
+              this.scrollToBottom();
+            }
+          });
+        } else {
+          this.messages.push({
+            role: 'assistant',
+            content: `Erro ao ler arquivo de teste: ${testFile}\nErro: ${error.message || 'Erro desconhecido'}\n\nPor favor, verifique se o arquivo existe.`,
+            timestamp: new Date()
+          });
+          this.scrollToBottom();
+        }
+      }
+    });
+  }
+
+  /**
+   * Envia requisição para IA corrigir o teste
+   */
+  private sendTestFixRequest(
+    testFile: string, 
+    testContent: string, 
+    sourceContent: string,
+    errorMessage: string,
+    output: string
+  ) {
+    const fixPrompt = `Corrija o seguinte teste unitário que está falhando.
+
+Arquivo de teste: ${testFile}
+
+Erro encontrado:
+${errorMessage}
+
+Saída completa do teste:
+${output.substring(0, 2000)}${output.length > 2000 ? '...' : ''}
+
+Código atual do teste:
+\`\`\`typescript
+${testContent}
+\`\`\`
+
+${sourceContent ? `Código do arquivo fonte sendo testado:
+\`\`\`typescript
+${sourceContent.substring(0, 3000)}${sourceContent.length > 3000 ? '...' : ''}
+\`\`\`
+` : ''}
+
+Por favor:
+1. Analise o erro e identifique a causa raiz
+2. Corrija o teste para que ele passe
+3. Mantenha a estrutura e os casos de teste existentes
+4. Forneça o código completo do teste corrigido em um bloco de código TypeScript
+5. Se necessário, explique brevemente o que foi corrigido
+
+Forneça APENAS o código do teste corrigido, sem explicações adicionais antes do código.`;
+
+    const options: AgentRequestOptions = {
+      projectFilesInfo: `Teste falhando: ${testFile}\nErro: ${errorMessage.substring(0, 200)}`
+    };
+
+    const fixHistory: ChatMessage[] = [
+      {
+        role: 'user',
+        content: fixPrompt
+      }
+    ];
+
+    this.agentService.sendMessage(fixHistory, options).subscribe({
+      next: (response) => {
+        this.isTyping = false;
+        const assistantMessage = response.content;
+
+        // Verificar se a resposta contém código do teste corrigido
+        const codeMatch = assistantMessage.match(/```(?:typescript|ts)?\n([\s\S]*?)```/);
+        if (codeMatch) {
+          const fixedTestCode = codeMatch[1].trim();
+          
+          // Substituir o arquivo de teste
+          this.fileService.writeFile(testFile, fixedTestCode).subscribe({
+            next: () => {
+              this.messages.push({
+                role: 'assistant',
+                content: `✅ Teste corrigido com sucesso! O arquivo foi atualizado.`,
+                timestamp: new Date()
+              });
+              this.fileCreated.emit(testFile);
+              this.scrollToBottom();
+            },
+            error: (error) => {
+              this.messages.push({
+                role: 'assistant',
+                content: `❌ Erro ao salvar teste corrigido: ${error.message || 'Erro desconhecido'}`,
+                timestamp: new Date()
+              });
+              this.scrollToBottom();
+            }
+          });
+        } else {
+          // Se não encontrou código, mostrar a resposta completa
+          this.messages.push({
+            role: 'assistant',
+            content: assistantMessage,
+            timestamp: new Date()
+          });
+          this.scrollToBottom();
+        }
+      },
+      error: (error) => {
+        this.isTyping = false;
+        this.messages.push({
+          role: 'assistant',
+          content: `Erro ao gerar correção: ${error.error || error.message || 'Erro desconhecido'}`,
+          timestamp: new Date()
+        });
+        this.scrollToBottom();
+      }
+    });
+  }
+
+  /**
+   * Parseia o conteúdo da mensagem para extrair blocos de código
+   */
+  private parseMessageContent(content: string): { text: string; codeBlocks: Array<{ code: string; language: string; index: number }> } {
+    const codeBlocks: Array<{ code: string; language: string; index: number }> = [];
+    let text = content;
+    let blockIndex = 0;
+
+    // Padrão para encontrar blocos de código markdown: ```language\ncode\n```
+    const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
+    let match;
+    let offset = 0;
+
+    while ((match = codeBlockRegex.exec(content)) !== null) {
+      const language = match[1] || 'typescript';
+      const code = match[2];
+      const startIndex = match.index;
+      const endIndex = startIndex + match[0].length;
+
+      codeBlocks.push({
+        code: code,
+        language: language,
+        index: blockIndex++
+      });
+
+      // Substituir o bloco de código por um placeholder
+      const placeholder = `__CODE_BLOCK_${codeBlocks.length - 1}__`;
+      text = text.substring(0, startIndex + offset) + placeholder + text.substring(endIndex + offset);
+      offset += placeholder.length - (endIndex - startIndex);
+    }
+
+    return { text, codeBlocks };
+  }
+
+  /**
+   * Renderiza o conteúdo parseado com blocos de código
+   */
+  renderMessageContent(message: Message): Array<{ type: 'text' | 'code'; content: string; language?: string }> {
+    if (!message.parsedContent) {
+      // Se não tem parsedContent, retornar conteúdo simples
+      return [{ type: 'text', content: message.content }];
+    }
+
+    const parts: Array<{ type: 'text' | 'code'; content: string; language?: string }> = [];
+    const { text, codeBlocks } = message.parsedContent;
+
+    // Dividir texto pelos placeholders
+    const textParts = text.split(/(__CODE_BLOCK_\d+__)/);
+
+    textParts.forEach((part, index) => {
+      const codeBlockMatch = part.match(/__CODE_BLOCK_(\d+)__/);
+      if (codeBlockMatch) {
+        const blockIndex = parseInt(codeBlockMatch[1]);
+        const codeBlock = codeBlocks[blockIndex];
+        if (codeBlock) {
+          parts.push({
+            type: 'code',
+            content: codeBlock.code,
+            language: codeBlock.language
+          });
+        }
+      } else if (part.trim()) {
+        parts.push({
+          type: 'text',
+          content: part
+        });
+      }
+    });
+
+    // Se não encontrou blocos, retornar conteúdo original
+    if (parts.length === 0) {
+      parts.push({ type: 'text', content: message.content });
+    }
+
+    return parts;
   }
 
   // Método para resetar o badge quando um novo arquivo é selecionado

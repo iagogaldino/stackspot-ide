@@ -87,12 +87,15 @@ export class MiniTerminalComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('terminalContainer', { static: true }) terminalContainer!: ElementRef;
   @Input() command: string = '';
   @Input() onClose?: () => void;
+  @Input() onTestFailed?: (errorDetails: { testFile: string; errorMessage: string; output: string }) => void;
 
   private terminal: Terminal | null = null;
   private fitAddon: FitAddon | null = null;
   private outputBuffer: string[] = [];
   private maxLines = 100; // Limitar número de linhas para performance
   private outputSubscription?: Subscription;
+  private fullOutput: string = ''; // Armazenar saída completa para análise
+  private testFinished: boolean = false;
 
   constructor(private terminalService: TerminalService) {}
 
@@ -185,11 +188,19 @@ export class MiniTerminalComponent implements OnInit, AfterViewInit, OnDestroy {
           // Recriar o terminal com apenas as últimas linhas se necessário
         }
         
+        // Acumular saída completa para análise
+        this.fullOutput += data;
+        
         // Escrever no terminal
         this.terminal.write(data);
         
         // Scroll automático
         this.terminal.scrollToBottom();
+        
+        // Detectar se o teste falhou (apenas uma vez)
+        if (!this.testFinished && this.fullOutput.length > 0) {
+          this.checkForTestFailure();
+        }
       }
     });
   }
@@ -223,6 +234,102 @@ export class MiniTerminalComponent implements OnInit, AfterViewInit, OnDestroy {
       this.terminal.write(data);
       this.terminal.scrollToBottom();
     }
+  }
+
+  /**
+   * Verifica se o teste falhou analisando a saída
+   */
+  private checkForTestFailure() {
+    // Padrões que indicam falha de teste
+    const failurePatterns = [
+      /FAIL\s+([^\s]+)/i,
+      /FAILED\s+([^\s]+)/i,
+      /Error:\s+([^\n]+)/i,
+      /✕\s+([^\n]+)/i,
+      /×\s+([^\n]+)/i,
+      /Test Suites:\s+\d+\s+failed/i,
+      /Tests:\s+\d+\s+failed/i
+    ];
+
+    const hasFailure = failurePatterns.some(pattern => pattern.test(this.fullOutput));
+    
+    if (hasFailure && !this.testFinished) {
+      this.testFinished = true;
+      
+      // Extrair informações do erro
+      const errorDetails = this.extractErrorDetails(this.fullOutput);
+      
+      if (errorDetails && this.onTestFailed) {
+        // Aguardar um pouco para garantir que toda a saída foi capturada
+        setTimeout(() => {
+          this.onTestFailed!(errorDetails);
+        }, 500);
+      }
+    }
+  }
+
+  /**
+   * Extrai detalhes do erro da saída do teste
+   */
+  private extractErrorDetails(output: string): { testFile: string; errorMessage: string; output: string } | null {
+    // Tentar encontrar o arquivo de teste que falhou
+    // Padrões mais específicos para capturar caminhos completos
+    let testFile = 'unknown-test-file.spec.ts';
+    
+    // Padrão 1: Caminho completo após FAIL (ex: FAIL src/app/app.spec.ts)
+    const failPattern = /FAIL\s+([^\s]+\.[\w]+\.(spec|test)\.(ts|js|tsx|jsx))/i;
+    const failMatch = output.match(failPattern);
+    if (failMatch) {
+      testFile = failMatch[1];
+    } else {
+      // Padrão 2: Caminho completo com barras (ex: src/app/app.spec.ts)
+      const pathPattern = /([\w\/\\]+[\w\/\\]+\.(spec|test)\.(ts|js|tsx|jsx))/i;
+      const pathMatch = output.match(pathPattern);
+      if (pathMatch) {
+        testFile = pathMatch[1];
+      } else {
+        // Padrão 3: Apenas nome do arquivo (fallback)
+        const simplePattern = /([^\s]+\.(spec|test)\.(ts|js|tsx|jsx))/i;
+        const simpleMatch = output.match(simplePattern);
+        if (simpleMatch) {
+          testFile = simpleMatch[1];
+        }
+      }
+    }
+    
+    // Normalizar separadores do caminho
+    testFile = testFile.replace(/\\/g, '/');
+
+    // Extrair mensagem de erro
+    // Procurar por padrões comuns de erro
+    let errorMessage = '';
+    
+    // Padrão: Error: mensagem
+    const errorMatch = output.match(/Error:\s*([^\n]+(?:\n(?!\s*at\s)[^\n]+)*)/i);
+    if (errorMatch) {
+      errorMessage = errorMatch[1].trim();
+    } else {
+      // Padrão: FAIL ou FAILED seguido de informações
+      const failMatch = output.match(/(?:FAIL|FAILED)[^\n]*\n([^\n]+(?:\n(?!\s{2,})[^\n]+)*)/i);
+      if (failMatch) {
+        errorMessage = failMatch[1].trim();
+      } else {
+        // Pegar últimas linhas relevantes antes de "FAIL"
+        const failIndex = output.lastIndexOf('FAIL');
+        if (failIndex > 0) {
+          const context = output.substring(Math.max(0, failIndex - 500), failIndex + 200);
+          errorMessage = context.split('\n').slice(-3).join('\n').trim();
+        } else {
+          errorMessage = 'Erro desconhecido no teste';
+        }
+      }
+    }
+
+    return {
+      testFile,
+      errorMessage,
+      output: this.fullOutput
+    };
   }
 }
 
