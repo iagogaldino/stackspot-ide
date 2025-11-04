@@ -1,0 +1,63 @@
+<div class="app-container">
+  <div class="app-content">
+    <!-- Sidebar - File Tree -->
+    <aside class="sidebar" *ngIf="currentProjectPath">
+      <app-file-tree 
+        [projectPath]="currentProjectPath"
+        (fileSelected)="onFileSelected($event)">
+      </app-file-tree>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" [class.with-chat]="showChat">
+    <!-- Tabs -->
+    <app-tabs></app-tabs>
+    
+    <!-- Editor Area -->
+    <div class="editor-area" *ngIf="selectedFile" [class.with-terminal]="showTerminal">
+      <app-editor [filePath]="selectedFile"></app-editor>
+    </div>
+    
+    <!-- No file selected or no project -->
+    <div class="empty-state" *ngIf="!selectedFile || !currentProjectPath" [class.with-terminal]="showTerminal">
+      <app-project-panel 
+        *ngIf="!currentProjectPath"
+        (projectOpened)="onProjectOpened($event)">
+      </app-project-panel>
+      
+      <div class="empty-editor" *ngIf="currentProjectPath && !selectedFile">
+        <h2>Nenhum arquivo selecionado</h2>
+        <p>Selecione um arquivo na árvore de arquivos para começar a editar.</p>
+      </div>
+    </div>
+
+    <!-- Terminal -->
+    <div class="terminal-panel" *ngIf="showTerminal">
+      <app-terminal [projectPath]="currentProjectPath"></app-terminal>
+    </div>
+  </main>
+
+  <!-- Chat Panel -->
+  <aside class="chat-panel" *ngIf="showChat">
+    <app-chat 
+      [projectPath]="currentProjectPath"
+      [selectedFile]="selectedFile"
+      (fileCreated)="onFileSelected($event)">
+    </app-chat>
+  </aside>
+  </div>
+
+  <!-- Terminal Toggle Button -->
+  <button class="terminal-toggle" (click)="toggleTerminal()" title="Toggle Terminal">
+    {{ showTerminal ? '▼' : '▲' }}
+  </button>
+
+  <!-- Chat Toggle Button -->
+  <button class="chat-toggle" (click)="toggleChat()" title="Toggle Chat">
+    {{ showChat ? '💬' : '💬' }}
+  </button>
+
+  <!-- Status Bar -->
+  <app-status-bar></app-status-bar>
+</div>
+

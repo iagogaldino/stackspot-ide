@@ -1,0 +1,20 @@
+<div class="project-panel">
+  <div class="panel-content">
+    <h1>MyIDE</h1>
+    <p class="subtitle">IDE para Projetos Angular</p>
+    
+    <div class="actions">
+      <button 
+        class="btn-primary" 
+        (click)="openProject()"
+        [disabled]="isLoading">
+        {{ isLoading ? 'Abrindo...' : 'Abrir Projeto Angular' }}
+      </button>
+    </div>
+
+    <div class="error" *ngIf="error">
+      <p>{{ error }}</p>
+    </div>
+  </div>
+</div>
+

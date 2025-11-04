@@ -1,0 +1,67 @@
+<div class="file-tree">
+  <div class="file-tree-header">
+    <h3>Explorador</h3>
+  </div>
+  <div class="file-tree-content">
+    <ng-container *ngFor="let item of files">
+      <div class="file-item">
+        <div 
+          class="file-item-row"
+          [class.expanded]="isExpanded(item.path)"
+          [class.selected]="isSelected(item.path)"
+          (click)="toggleDirectory(item, $event)">
+          <span class="file-icon">{{ getFileIcon(item) }}</span>
+          <span class="file-name">{{ item.name }}</span>
+        </div>
+        
+        <!-- Subdiretórios e arquivos dentro do diretório -->
+        <div class="file-children" *ngIf="isExpanded(item.path)">
+          <ng-container *ngIf="item.children && item.children.length > 0">
+            <div class="file-item" *ngFor="let child of item.children">
+              <div 
+                class="file-item-row"
+                [class.expanded]="isExpanded(child.path)"
+                [class.selected]="isSelected(child.path)"
+                (click)="toggleDirectory(child, $event)">
+                <span class="file-icon">{{ getFileIcon(child) }}</span>
+                <span class="file-name">{{ child.name }}</span>
+              </div>
+              
+              <!-- Renderizar filhos recursivamente -->
+              <div class="file-children" *ngIf="isExpanded(child.path)">
+                <ng-container *ngIf="child.children && child.children.length > 0">
+                  <div class="file-item" *ngFor="let grandchild of child.children">
+                    <div 
+                      class="file-item-row"
+                      [class.expanded]="isExpanded(grandchild.path)"
+                      [class.selected]="isSelected(grandchild.path)"
+                      (click)="toggleDirectory(grandchild, $event)">
+                      <span class="file-icon">{{ getFileIcon(grandchild) }}</span>
+                      <span class="file-name">{{ grandchild.name }}</span>
+                    </div>
+                    
+                    <!-- Mais um nível de profundidade se necessário -->
+                    <div class="file-children" *ngIf="isExpanded(grandchild.path) && grandchild.children && grandchild.children.length > 0">
+                      <div class="file-item" *ngFor="let greatGrandchild of grandchild.children">
+                        <div 
+                          class="file-item-row"
+                          [class.selected]="isSelected(greatGrandchild.path)"
+                          (click)="toggleDirectory(greatGrandchild, $event)">
+                          <span class="file-icon">{{ getFileIcon(greatGrandchild) }}</span>
+                          <span class="file-name">{{ greatGrandchild.name }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+                <div class="file-item-row empty" *ngIf="!child.children || child.children.length === 0">Carregando...</div>
+              </div>
+            </div>
+          </ng-container>
+          <div class="file-item-row empty" *ngIf="!item.children || item.children.length === 0">Carregando...</div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+

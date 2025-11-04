@@ -1,0 +1,117 @@
+<div class="chat-container">
+  <!-- Header fixo no topo -->
+  <div class="chat-header">
+    <h3>Assistente IA</h3>
+    <button 
+      *ngIf="hasApiKey" 
+      class="settings-button"
+      (click)="showApiKeyInput = !showApiKeyInput"
+      title="Configurações">
+      ⚙️
+    </button>
+  </div>
+
+  <!-- Input de API Key -->
+  <div class="api-key-container" *ngIf="showApiKeyInput">
+    <div class="api-key-input-wrapper">
+      <input
+        type="password"
+        [(ngModel)]="apiKey"
+        placeholder="Cole sua API key da OpenAI aqui"
+        class="api-key-input"
+        (keydown.enter)="$event.preventDefault(); saveApiKey()">
+      <button 
+        (click)="saveApiKey()" 
+        [disabled]="!apiKey.trim()"
+        class="save-key-button">
+        Salvar
+      </button>
+    </div>
+    <p class="api-key-hint">
+      Obtenha sua API key em: <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com/api-keys</a>
+    </p>
+  </div>
+  
+  <!-- Área de mensagens com scroll -->
+  <div class="chat-messages" #messagesContainer>
+    <div 
+      *ngFor="let message of messages; let i = index" 
+      class="message"
+      [class.user-message]="message.role === 'user'"
+      [class.assistant-message]="message.role === 'assistant'">
+      <div class="message-content">
+        <!-- Mostrar conteúdo da mensagem -->
+        <div *ngIf="message.content" class="message-text">{{ message.content }}</div>
+        <!-- Se houver arquivo criado, mostrar badge clicável -->
+        <div *ngIf="message.createdFile" class="created-file-badge-container">
+          <div class="created-file-badge" (click)="openCreatedFile(message.createdFile!)" title="Clique para abrir o arquivo">
+            <span class="file-icon">📄</span>
+            <span class="file-name">{{ getFileName(message.createdFile) }}</span>
+          </div>
+          <button 
+            class="run-test-button" 
+            (click)="runTest(message.createdFile!, $event)"
+            title="Executar teste">
+            ▶️
+          </button>
+        </div>
+        <!-- Mini terminal para execução de teste -->
+        <app-mini-terminal
+          *ngIf="message.testExecution?.isRunning"
+          [command]="message.testExecution!.command"
+          [onClose]="getCloseTestTerminalCallback(i)">
+        </app-mini-terminal>
+        <div class="message-time">{{ formatTime(message.timestamp) }}</div>
+      </div>
+    </div>
+    
+    <!-- Indicador de digitação -->
+    <div *ngIf="isTyping" class="message assistant-message">
+      <div class="message-content">
+        <div class="typing-indicator">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Espaço no final para garantir que a última mensagem seja visível -->
+    <div class="messages-end-spacer"></div>
+  </div>
+  
+  <!-- Input fixo no bottom -->
+  <div class="chat-input-container">
+    <!-- Badge do arquivo aberto -->
+    <div class="file-badge" *ngIf="selectedFile && showFileBadge">
+      <span class="file-icon">📄</span>
+      <span class="file-name">{{ getFileName(selectedFile) }}</span>
+      <button 
+        class="file-badge-close" 
+        (click)="removeFileFromContext()"
+        title="Remover arquivo do contexto">
+        ×
+      </button>
+    </div>
+    
+    <div class="input-wrapper">
+      <textarea
+        #messageInput
+        [(ngModel)]="userMessage"
+        (keydown.enter)="$event.preventDefault(); sendMessage()"
+        (keydown.shift.enter)="true"
+        placeholder="Digite sua mensagem... (Enter para enviar, Shift+Enter para nova linha)"
+        class="chat-input"
+        rows="1">
+      </textarea>
+      <button 
+        (click)="sendMessage()" 
+        [disabled]="!userMessage.trim() || isTyping"
+        class="send-button"
+        title="Enviar mensagem">
+        <span class="send-icon">➤</span>
+      </button>
+    </div>
+  </div>
+</div>
+

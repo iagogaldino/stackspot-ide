@@ -1,0 +1,156 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background-color: #1e1e1e;
+  overflow: hidden;
+}
+
+.app-content {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Status Bar - garantir que fique no bottom */
+.app-container > app-status-bar {
+  flex-shrink: 0;
+  order: 999;
+  z-index: 100;
+  position: relative;
+}
+
+/* Garantir que o conteúdo não ultrapasse a status bar */
+.app-container {
+  box-sizing: border-box;
+}
+
+.sidebar {
+  width: 300px;
+  background-color: #252526;
+  border-right: 1px solid #3e3e42;
+  overflow-y: auto;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* Tabs component */
+.main-content app-tabs {
+  flex-shrink: 0;
+}
+
+.editor-area {
+  /* flex: 1;
+  display: flex; */
+  overflow: hidden;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  transition: height 0.2s ease;
+}
+
+.editor-area.with-terminal {
+  height: calc(100% - 300px);
+}
+
+.empty-state.with-terminal {
+  height: calc(100% - 300px);
+}
+
+.terminal-panel {
+  height: 300px;
+  border-top: 1px solid #3e3e42;
+  background-color: #1e1e1e;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.chat-panel {
+  width: 350px;
+  background-color: #1e1e1e;
+  border-left: 1px solid #3e3e42;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: width 0.3s ease;
+}
+
+.terminal-toggle {
+  position: fixed;
+  bottom: 32px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  background-color: #007acc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.terminal-toggle:hover {
+  background-color: #005a9e;
+}
+
+.chat-toggle {
+  position: fixed;
+  bottom: 72px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  background-color: #007acc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.chat-toggle:hover {
+  background-color: #005a9e;
+}
+
+.empty-state {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1e1e1e;
+}
+
+.empty-editor {
+  text-align: center;
+  color: #858585;
+}
+
+.empty-editor h2 {
+  margin-bottom: 10px;
+  color: #cccccc;
+}
+
+.empty-editor p {
+  font-size: 14px;
+}
+

@@ -1,0 +1,69 @@
+<div class="json-field">
+  <!-- Campo simples (string, number, boolean) -->
+  <div *ngIf="isDirectlyEditable()" class="simple-field">
+    <label class="field-label">{{ field.key }}</label>
+    
+    <!-- Boolean: Toggle -->
+    <div *ngIf="field.type === 'boolean'" class="boolean-field">
+      <label class="toggle-switch">
+        <input 
+          type="checkbox" 
+          [checked]="field.value"
+          (change)="updateValue($any($event.target).checked)">
+        <span class="toggle-slider"></span>
+      </label>
+      <span class="boolean-value">{{ field.value ? 'true' : 'false' }}</span>
+    </div>
+    
+    <!-- String ou Number: Input -->
+    <input 
+      *ngIf="field.type !== 'boolean'"
+      [type]="getInputType()"
+      [value]="field.value"
+      (input)="updateValue($any($event.target).value)"
+      class="field-input"
+      [placeholder]="'Digite ' + field.key">
+  </div>
+
+  <!-- Array: Lista editável -->
+  <div *ngIf="isArray()" class="array-field">
+    <label class="field-label">{{ field.key }} (Array)</label>
+    <div class="array-items">
+      <div *ngFor="let item of field.value; let i = index" class="array-item">
+        <input 
+          type="text" 
+          [value]="item"
+          (input)="updateArrayItem(i, $any($event.target).value)"
+          class="array-item-input">
+        <button 
+          class="remove-item-btn" 
+          (click)="removeArrayItem(i)"
+          title="Remover item">
+          ×
+        </button>
+      </div>
+      <button 
+        class="add-item-btn" 
+        (click)="addArrayItem()"
+        title="Adicionar item">
+        + Adicionar Item
+      </button>
+    </div>
+  </div>
+
+  <!-- Object: Seção colapsável (simplificado por enquanto) -->
+  <div *ngIf="isObject()" class="object-field">
+    <label class="field-label">{{ field.key }} (Objeto)</label>
+    <div class="object-info">
+      <span class="object-count">{{ getObjectKeyCount() }} propriedades</span>
+      <button 
+        class="expand-btn" 
+        (click)="toggleObject()"
+        title="Expandir/Colapsar">
+        {{ isExpanded ? '▼' : '▶' }}
+      </button>
+    </div>
+    <!-- TODO: Renderizar subcampos recursivamente -->
+  </div>
+</div>
+

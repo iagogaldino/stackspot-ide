@@ -1,0 +1,24 @@
+<div class="tabs-container">
+  <div class="tabs-list" *ngIf="tabs.length > 0">
+    <div
+      *ngFor="let tab of tabs"
+      class="tab-item"
+      [class.active]="isActiveTab(tab.id)"
+      (click)="selectTab(tab.id)">
+      <span class="tab-icon">{{ getFileIcon(tab.fileName) }}</span>
+      <span class="tab-name">{{ tab.fileName }}</span>
+      <span class="tab-dirty" *ngIf="tab.isDirty">●</span>
+      <button
+        class="tab-close-btn"
+        (click)="closeTab(tab.id, $event)"
+        title="Fechar aba"
+        *ngIf="tabs.length > 1">
+        ×
+      </button>
+    </div>
+  </div>
+  <div class="tabs-empty" *ngIf="tabs.length === 0">
+    <span class="empty-message">Nenhum arquivo aberto</span>
+  </div>
+</div>
+

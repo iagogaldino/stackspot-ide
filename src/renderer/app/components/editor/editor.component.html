@@ -1,0 +1,63 @@
+<div class="editor-container" *ngIf="filePath">
+  <div class="editor-header">
+    <span class="file-name">{{ getFileName() }}</span>
+    <div class="editor-actions">
+      <!-- Botões para JSON -->
+      <div *ngIf="filePath?.endsWith('.json')">
+        <button 
+          class="toggle-editor-btn" 
+          (click)="toggleEditorView()"
+          [title]="showVisualEditor ? 'Ver código' : 'Ver interface visual'">
+          {{ showVisualEditor ? '📄' : '🎨' }}
+        </button>
+        <button 
+          class="config-btn" 
+          (click)="openConfigDialog()"
+          title="Configurar editor JSON">
+          ⚙️
+        </button>
+      </div>
+      <!-- Botões para Markdown -->
+      <div *ngIf="isMarkdownFile()">
+        <button 
+          class="toggle-editor-btn" 
+          (click)="toggleMarkdownPreview()"
+          [title]="showMarkdownPreview ? 'Ver código' : 'Ver preview'">
+          {{ showMarkdownPreview ? '📄' : '👁️' }}
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Editor Visual JSON -->
+  <app-json-visual-editor
+    *ngIf="showVisualEditor && jsonData && filePath"
+    [jsonData]="jsonData"
+    [filePath]="filePath"
+    (dataChanged)="onJsonDataChanged($event)"
+    (errorOccurred)="onVisualEditorError()">
+  </app-json-visual-editor>
+  
+  <!-- Preview Markdown -->
+  <app-markdown-preview
+    *ngIf="showMarkdownPreview && markdownContent && filePath"
+    [markdownContent]="markdownContent">
+  </app-markdown-preview>
+  
+  <!-- Monaco Editor (padrão) -->
+  <div 
+    [hidden]="showVisualEditor || showMarkdownPreview"
+    *ngIf="filePath"
+    #editorContainer 
+    class="monaco-editor" 
+    style="width: 100%; height: 100%;">
+  </div>
+
+  <!-- Modal de Configuração -->
+  <div class="modal-overlay" *ngIf="showConfigDialog" (click)="closeConfigDialog()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <app-json-editor-settings (close)="closeConfigDialog()"></app-json-editor-settings>
+    </div>
+  </div>
+</div>
+

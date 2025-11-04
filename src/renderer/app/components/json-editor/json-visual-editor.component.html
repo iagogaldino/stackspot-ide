@@ -1,0 +1,46 @@
+<div class="json-visual-editor" *ngIf="jsonData && fields.length > 0">
+  <div class="json-editor-header">
+    <div class="header-left">
+      <span class="file-icon">📄</span>
+      <span class="file-name">{{ getFileName() }}</span>
+    </div>
+    <div class="header-actions">
+      <button class="save-btn" (click)="saveJSON()" title="Salvar alterações">
+        💾 Salvar
+      </button>
+    </div>
+  </div>
+
+  <div class="json-editor-content">
+    <div *ngFor="let field of fields" class="json-field-container">
+      <!-- Campo especial: Scripts -->
+      <app-scripts-field
+        *ngIf="field.isSpecial === 'scripts'"
+        [field]="field"
+        [jsonData]="jsonData"
+        (valueChanged)="updateField(field.path, $event)">
+      </app-scripts-field>
+
+      <!-- Campo especial: Dependencies -->
+      <app-dependencies-field
+        *ngIf="field.isSpecial === 'dependencies' || field.isSpecial === 'devDependencies'"
+        [field]="field"
+        [jsonData]="jsonData"
+        (valueChanged)="updateField(field.path, $event)">
+      </app-dependencies-field>
+
+      <!-- Campo genérico -->
+      <app-json-field
+        *ngIf="!field.isSpecial"
+        [field]="field"
+        (valueChanged)="updateField(field.path, $event)">
+      </app-json-field>
+    </div>
+  </div>
+</div>
+
+<!-- Mensagem de erro se não conseguir renderizar -->
+<div class="json-editor-error" *ngIf="jsonData && fields.length === 0">
+  <p>Erro ao carregar editor visual. Tente usar o editor de código.</p>
+</div>
+

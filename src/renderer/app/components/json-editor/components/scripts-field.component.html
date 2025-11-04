@@ -1,0 +1,73 @@
+<div class="scripts-field">
+  <div class="field-header">
+    <span class="field-icon">⚙️</span>
+    <span class="field-title">Scripts</span>
+  </div>
+  
+  <div class="scripts-list">
+    <div *ngFor="let script of scripts" class="script-item">
+      <div class="script-info">
+        <span class="script-name">▶ {{ script.name }}</span>
+        <span class="script-command">{{ script.command }}</span>
+      </div>
+      <div class="script-actions">
+        <button 
+          class="action-btn edit-btn" 
+          (click)="startEdit(script)"
+          title="Editar script">
+          ✏️
+        </button>
+        <button 
+          class="action-btn run-btn" 
+          (click)="runScript(script)"
+          title="Executar script">
+          ▶️
+        </button>
+        <button 
+          class="action-btn delete-btn" 
+          (click)="removeScript(script.name)"
+          title="Remover script">
+          🗑️
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulário de adicionar/editar script -->
+  <div class="add-script-form" *ngIf="showAddScript">
+    <div class="form-row">
+      <input 
+        type="text" 
+        [(ngModel)]="newScriptName"
+        placeholder="Nome do script (ex: start)"
+        class="form-input script-name-input"
+        [disabled]="!!editingScript">
+      <input 
+        type="text" 
+        [(ngModel)]="newScriptCommand"
+        placeholder="Comando (ex: npm run dev)"
+        class="form-input script-command-input">
+    </div>
+    <div class="form-actions">
+      <button 
+        class="btn btn-primary" 
+        (click)="editingScript ? saveEdit() : addScript()">
+        {{ editingScript ? 'Salvar' : 'Adicionar' }}
+      </button>
+      <button 
+        class="btn btn-secondary" 
+        (click)="cancelEdit()">
+        Cancelar
+      </button>
+    </div>
+  </div>
+
+  <!-- Botão para adicionar script -->
+  <button 
+    *ngIf="!showAddScript"
+    class="add-script-btn" 
+    (click)="showAddScript = true">
+    + Adicionar Script
+  </button>
+</div>
+

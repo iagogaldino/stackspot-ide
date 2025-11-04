@@ -1,0 +1,73 @@
+<div class="dependencies-field">
+  <div class="field-header">
+    <span class="field-icon">{{ getFieldIcon() }}</span>
+    <span class="field-title">{{ getFieldTitle() }}</span>
+  </div>
+  
+  <div class="dependencies-list">
+    <div *ngFor="let dep of dependencies" class="dependency-item">
+      <div class="dependency-info">
+        <span class="dependency-name">{{ dep.name }}</span>
+        <input 
+          type="text" 
+          [value]="dep.version"
+          (blur)="updateVersion(dep.name, $any($event.target).value)"
+          (keydown.enter)="updateVersion(dep.name, $any($event.target).value)"
+          class="dependency-version-input"
+          title="Clique para editar versão">
+      </div>
+      <div class="dependency-actions">
+        <button 
+          class="action-btn edit-btn" 
+          (click)="startEdit(dep)"
+          title="Editar dependência">
+          ✏️
+        </button>
+        <button 
+          class="action-btn delete-btn" 
+          (click)="removeDependency(dep.name)"
+          title="Remover dependência">
+          🗑️
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulário de adicionar/editar dependência -->
+  <div class="add-dependency-form" *ngIf="showAddDependency">
+    <div class="form-row">
+      <input 
+        type="text" 
+        [(ngModel)]="newDependencyName"
+        placeholder="Nome do pacote (ex: @angular/core)"
+        class="form-input dependency-name-input"
+        [disabled]="!!editingDependency">
+      <input 
+        type="text" 
+        [(ngModel)]="newDependencyVersion"
+        placeholder="Versão (ex: ^15.0.0)"
+        class="form-input dependency-version-input-form">
+    </div>
+    <div class="form-actions">
+      <button 
+        class="btn btn-primary" 
+        (click)="editingDependency ? saveEdit() : addDependency()">
+        {{ editingDependency ? 'Salvar' : 'Adicionar' }}
+      </button>
+      <button 
+        class="btn btn-secondary" 
+        (click)="cancelEdit()">
+        Cancelar
+      </button>
+    </div>
+  </div>
+
+  <!-- Botão para adicionar dependência -->
+  <button 
+    *ngIf="!showAddDependency"
+    class="add-dependency-btn" 
+    (click)="showAddDependency = true">
+    + Adicionar Dependência
+  </button>
+</div>
+

@@ -1,0 +1,134 @@
+.tabs-container {
+  background-color: #252526;
+  border-bottom: 1px solid #3e3e42;
+  display: flex;
+  align-items: center;
+  height: 35px;
+  min-height: 35px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-shrink: 0;
+}
+
+.tabs-list {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  min-width: 0;
+}
+
+.tab-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: #2d2d30;
+  border-right: 1px solid #3e3e42;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-width: 120px;
+  max-width: 250px;
+  position: relative;
+  height: 100%;
+}
+
+.tab-item:hover {
+  background-color: #2a2d2e;
+}
+
+.tab-item.active {
+  background-color: #1e1e1e;
+  border-bottom: 2px solid #007acc;
+}
+
+.tab-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.tab-name {
+  font-size: 12px;
+  color: #cccccc;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.tab-item.active .tab-name {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.tab-dirty {
+  color: #ff6b6b;
+  font-size: 10px;
+  flex-shrink: 0;
+  margin-left: -4px;
+}
+
+.tab-close-btn {
+  background: none;
+  border: none;
+  color: #cccccc;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  opacity: 0.7;
+}
+
+.tab-close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  opacity: 1;
+}
+
+.tabs-empty {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  height: 100%;
+}
+
+.empty-message {
+  font-size: 12px;
+  color: #808080;
+  font-style: italic;
+}
+
+/* Scrollbar para a lista de abas */
+.tabs-container::-webkit-scrollbar {
+  height: 4px;
+}
+
+.tabs-container::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+.tabs-container::-webkit-scrollbar-thumb {
+  background: #3e3e42;
+  border-radius: 2px;
+}
+
+.tabs-container::-webkit-scrollbar-thumb:hover {
+  background: #505050;
+}
+
+/* Scrollbar para Firefox */
+.tabs-container {
+  scrollbar-width: thin;
+  scrollbar-color: #3e3e42 #1e1e1e;
+}
+

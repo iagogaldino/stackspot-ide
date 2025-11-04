@@ -1,0 +1,211 @@
+.dependencies-field {
+  background-color: #2d2d30;
+  border: 1px solid #3e3e42;
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.field-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.field-icon {
+  font-size: 18px;
+}
+
+.field-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #cccccc;
+}
+
+.dependencies-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.dependency-item {
+  background-color: #252526;
+  border: 1px solid #3e3e42;
+  border-radius: 4px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.dependency-item:hover {
+  border-color: #007acc;
+  background-color: #2a2a2b;
+}
+
+.dependency-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.dependency-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #4ec9b0;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dependency-version-input {
+  background-color: #1e1e1e;
+  border: 1px solid #3e3e42;
+  border-radius: 4px;
+  padding: 4px 8px;
+  color: #cccccc;
+  font-size: 12px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.dependency-version-input:focus {
+  outline: none;
+  border-color: #007acc;
+  background-color: #252526;
+}
+
+.dependency-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.action-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid #3e3e42;
+  border-radius: 4px;
+  color: #cccccc;
+  padding: 6px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #007acc;
+}
+
+.edit-btn:hover {
+  border-color: #007acc;
+  color: #007acc;
+}
+
+.delete-btn:hover {
+  border-color: #dc3545;
+  color: #dc3545;
+}
+
+.add-dependency-form {
+  background-color: #252526;
+  border: 1px solid #3e3e42;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.form-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.form-input {
+  background-color: #1e1e1e;
+  border: 1px solid #3e3e42;
+  border-radius: 4px;
+  padding: 8px 12px;
+  color: #cccccc;
+  font-size: 12px;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #007acc;
+}
+
+.form-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dependency-name-input {
+  flex: 1;
+}
+
+.dependency-version-input-form {
+  flex: 0 0 150px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #007acc 0%, #005a9e 100%);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #0099ff 0%, #007acc 100%);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #cccccc;
+  border: 1px solid #3e3e42;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.add-dependency-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  border: none;
+  border-radius: 4px;
+  color: white;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-dependency-btn:hover {
+  background: linear-gradient(135deg, #34ce57 0%, #28d4a8 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+}
+
