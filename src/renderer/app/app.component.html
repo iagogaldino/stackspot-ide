@@ -15,8 +15,19 @@
       <!-- Extensions Manager -->
       <app-extensions-manager *ngIf="activeView === 'extensions'"></app-extensions-manager>
       
+      <!-- Test Finder -->
+      <app-test-finder *ngIf="activeView === 'tests'"></app-test-finder>
+      
+      <!-- Chat Panel -->
+      <app-chat 
+        *ngIf="activeView === 'chat'"
+        [projectPath]="currentProjectPath"
+        [selectedFile]="selectedFile"
+        (fileCreated)="onFileSelected($event)">
+      </app-chat>
+      
       <!-- Placeholder para outras views -->
-      <div class="sidebar-placeholder" *ngIf="activeView !== 'explorer' && activeView !== 'extensions'">
+      <div class="sidebar-placeholder" *ngIf="activeView !== 'explorer' && activeView !== 'extensions' && activeView !== 'tests' && activeView !== 'chat'">
         <p>{{ activeView }} - Em breve</p>
       </div>
       
@@ -27,13 +38,22 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="main-content" [class.with-chat]="showChat">
+    <main class="main-content">
     <!-- Tabs -->
     <app-tabs></app-tabs>
     
     <!-- Editor Area -->
-    <div class="editor-area" *ngIf="selectedFile" [class.with-terminal]="showTerminal">
-      <app-editor [filePath]="selectedFile"></app-editor>
+    <div class="editor-area" *ngIf="selectedFile" [class.with-terminal]="showTerminal" [class.with-test-prompt]="isTestFile(selectedFile)">
+      <!-- Layout lado a lado quando tem test-prompt -->
+      <div class="editor-chat-container" *ngIf="isTestFile(selectedFile)">
+        <app-editor [filePath]="selectedFile" class="editor-panel"></app-editor>
+        <app-test-prompt 
+          [testFilePath]="selectedFile"
+          class="chat-panel">
+        </app-test-prompt>
+      </div>
+      <!-- Layout normal quando não tem test-prompt -->
+      <app-editor *ngIf="!isTestFile(selectedFile)" [filePath]="selectedFile"></app-editor>
     </div>
     
     <!-- No file selected or no project -->
@@ -55,25 +75,7 @@
     </div>
   </main>
 
-  <!-- Chat Panel -->
-  <aside class="chat-panel" *ngIf="showChat">
-    <app-chat 
-      [projectPath]="currentProjectPath"
-      [selectedFile]="selectedFile"
-      (fileCreated)="onFileSelected($event)">
-    </app-chat>
-  </aside>
   </div>
-
-  <!-- Terminal Toggle Button -->
-  <button class="terminal-toggle" (click)="toggleTerminal()" title="Toggle Terminal">
-    {{ showTerminal ? '▼' : '▲' }}
-  </button>
-
-  <!-- Chat Toggle Button -->
-  <button class="chat-toggle" (click)="toggleChat()" title="Toggle Chat">
-    {{ showChat ? '💬' : '💬' }}
-  </button>
 
   <!-- Status Bar -->
   <app-status-bar></app-status-bar>
