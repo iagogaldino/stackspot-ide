@@ -4,7 +4,7 @@
     <app-activity-bar (viewChanged)="onViewChanged($event)"></app-activity-bar>
 
     <!-- Sidebar - File Tree ou Extensions -->
-    <aside class="sidebar">
+    <aside class="sidebar" appResizable direction="horizontal" [initialSize]="300" [minSize]="150" [maxSize]="800" storageKey="sidebar-width">
       <!-- File Tree -->
       <app-file-tree 
         *ngIf="activeView === 'explorer' && currentProjectPath"
@@ -46,7 +46,7 @@
     <div class="editor-area" *ngIf="selectedFile" [class.with-terminal]="showTerminal" [class.with-test-prompt]="isTestFile(selectedFile)">
       <!-- Layout lado a lado quando tem test-prompt -->
       <div class="editor-chat-container" *ngIf="isTestFile(selectedFile)">
-        <app-editor [filePath]="selectedFile" class="editor-panel"></app-editor>
+        <app-editor [filePath]="selectedFile" class="editor-panel" appResizable direction="horizontal" [initialSize]="400" [minSize]="200" [maxSize]="1200" storageKey="editor-panel-width"></app-editor>
         <app-test-prompt 
           [testFilePath]="selectedFile"
           class="chat-panel">
@@ -70,7 +70,7 @@
     </div>
 
     <!-- Terminal -->
-    <div class="terminal-panel" *ngIf="showTerminal">
+    <div class="terminal-panel" *ngIf="showTerminal" appResizable direction="vertical" [initialSize]="300" [minSize]="100" [maxSize]="600" storageKey="terminal-height">
       <app-terminal [projectPath]="currentProjectPath"></app-terminal>
     </div>
   </main>
