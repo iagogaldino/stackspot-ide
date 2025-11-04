@@ -476,8 +476,12 @@ export class ExtensionService implements OnInit, OnDestroy {
           await this.fileService.writeFile(filePath, content).toPromise();
         },
         listFiles: async (dirPath: string, extensions?: string[]): Promise<string[]> => {
-          // TODO: Implementar listagem de arquivos
-          return [];
+          try {
+            return await this.fileService.listFilesByType(dirPath, extensions).toPromise() || [];
+          } catch (error: any) {
+            console.error('Erro ao listar arquivos:', error);
+            return [];
+          }
         },
         exists: async (filePath: string): Promise<boolean> => {
           // TODO: Implementar verificação de existência

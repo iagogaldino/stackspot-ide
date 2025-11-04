@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-export type ActivityView = 'explorer' | 'extensions' | 'search' | 'git';
+export type ActivityView = 'explorer' | 'extensions' | 'search' | 'git' | 'tests' | 'chat';
 
 @Component({
   selector: 'app-activity-bar',

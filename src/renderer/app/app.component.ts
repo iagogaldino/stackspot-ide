@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FileTreeComponent } from './components/file-tree/file-tree.component';
 import { EditorComponent } from './components/editor/editor.component';
@@ -9,15 +9,18 @@ import { TabsComponent } from './components/tabs/tabs.component';
 import { StatusBarComponent } from './components/status-bar/status-bar.component';
 import { ActivityBarComponent, ActivityView } from './components/activity-bar/activity-bar.component';
 import { ExtensionsManagerComponent } from './components/extensions/extensions-manager.component';
+import { TestFinderComponent } from './components/test-finder/test-finder.component';
+import { TestPromptComponent } from './components/test-prompt/test-prompt.component';
 import { TabsService } from './services/tabs.service';
 import { WorkspaceService } from './services/workspace.service';
 import { ExtensionService } from './services/extension.service';
+import { ResizableDirective } from './directives/resizable.directive';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FileTreeComponent, EditorComponent, ProjectPanelComponent, TerminalComponent, ChatComponent, TabsComponent, StatusBarComponent, ActivityBarComponent, ExtensionsManagerComponent],
+  imports: [CommonModule, FileTreeComponent, EditorComponent, ProjectPanelComponent, TerminalComponent, ChatComponent, TabsComponent, StatusBarComponent, ActivityBarComponent, ExtensionsManagerComponent, TestFinderComponent, TestPromptComponent, ResizableDirective],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -77,16 +80,27 @@ export class AppComponent implements OnInit, OnDestroy {
     this.tabsService.openTab(filePath);
   }
 
+  onViewChanged(view: ActivityView) {
+    this.activeView = view;
+  }
+
   toggleTerminal() {
     this.showTerminal = !this.showTerminal;
   }
 
-  toggleChat() {
-    this.showChat = !this.showChat;
+  @HostListener('window:keydown', ['$event'])
+  handleKeyDown(event: KeyboardEvent) {
+    // Ctrl + " (aspas duplas) para toggle terminal
+    if (event.ctrlKey && event.key === '"') {
+      event.preventDefault();
+      this.toggleTerminal();
+    }
   }
 
-  onViewChanged(view: ActivityView) {
-    this.activeView = view;
+  isTestFile(filePath: string | null): boolean {
+    if (!filePath) return false;
+    const testExtensions = ['.spec.ts', '.test.ts', '.spec.js', '.test.js'];
+    return testExtensions.some(ext => filePath.toLowerCase().endsWith(ext));
   }
 }
 

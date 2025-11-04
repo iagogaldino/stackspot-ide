@@ -27,6 +27,16 @@ export class ExtensionsManagerComponent implements OnInit, OnDestroy {
       publisher: 'myide',
       icon: '⚡',
       installed: false
+    },
+    {
+      id: 'test-finder-extension',
+      name: 'Test Finder',
+      displayName: 'Test Finder',
+      version: '1.0.0',
+      description: 'Lista todos os arquivos de teste (.spec.ts, .test.ts) do projeto Angular',
+      publisher: 'myide',
+      icon: '🧪',
+      installed: false
     }
   ];
 

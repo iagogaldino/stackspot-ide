@@ -30,5 +30,21 @@
     title="Extensões">
     ⚡
   </button>
+  
+  <button 
+    class="activity-item tests"
+    [class.active]="isActive('tests')"
+    (click)="selectView('tests')"
+    title="Testes">
+    🧪
+  </button>
+  
+  <button 
+    class="activity-item chat"
+    [class.active]="isActive('chat')"
+    (click)="selectView('chat')"
+    title="Chat">
+    💬
+  </button>
 </div>
 
