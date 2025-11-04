@@ -1,0 +1,34 @@
+<div class="activity-bar">
+  <button 
+    class="activity-item"
+    [class.active]="isActive('explorer')"
+    (click)="selectView('explorer')"
+    title="Explorador de Arquivos">
+    📁
+  </button>
+  
+  <button 
+    class="activity-item"
+    [class.active]="isActive('search')"
+    (click)="selectView('search')"
+    title="Buscar">
+    🔍
+  </button>
+  
+  <button 
+    class="activity-item"
+    [class.active]="isActive('git')"
+    (click)="selectView('git')"
+    title="Controle de Versão">
+    🌿
+  </button>
+  
+  <button 
+    class="activity-item extensions"
+    [class.active]="isActive('extensions')"
+    (click)="selectView('extensions')"
+    title="Extensões">
+    ⚡
+  </button>
+</div>
+

@@ -1,0 +1,376 @@
+.extensions-manager {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #1e1e1e;
+  color: #cccccc;
+  overflow: hidden;
+}
+
+.extensions-tabs {
+  display: flex;
+  border-bottom: 1px solid #3e3e42;
+  background-color: #252526;
+  padding: 0 8px;
+}
+
+.tab-btn {
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  color: #858585;
+  cursor: pointer;
+  font-size: 13px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  margin-bottom: -1px;
+}
+
+.tab-btn:hover {
+  color: #cccccc;
+  background-color: #2d2d30;
+}
+
+.tab-btn.active {
+  color: #ffffff;
+  border-bottom-color: #007acc;
+}
+
+.extensions-header {
+  padding: 16px;
+  border-bottom: 1px solid #3e3e42;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #252526;
+}
+
+.extensions-header h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.reload-btn {
+  background: none;
+  border: none;
+  color: #858585;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.reload-btn:hover {
+  background-color: #3e3e42;
+  color: #cccccc;
+}
+
+.extensions-list,
+.marketplace-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.marketplace-header {
+  padding: 16px;
+  border-bottom: 1px solid #3e3e42;
+  margin-bottom: 8px;
+}
+
+.marketplace-description {
+  margin: 0;
+  color: #858585;
+  font-size: 13px;
+}
+
+.marketplace-extensions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.marketplace-item {
+  background-color: #252526;
+  border: 1px solid #3e3e42;
+  border-radius: 4px;
+  padding: 16px;
+  display: flex;
+  gap: 16px;
+  transition: all 0.2s;
+}
+
+.marketplace-item:hover {
+  border-color: #007acc;
+  background-color: #2d2d30;
+}
+
+.marketplace-item-icon {
+  font-size: 32px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #3e3e42;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.marketplace-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.marketplace-item-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.marketplace-item-name {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.marketplace-item-version {
+  font-size: 11px;
+  color: #858585;
+  padding: 2px 6px;
+  background-color: #3e3e42;
+  border-radius: 3px;
+}
+
+.marketplace-item-badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.marketplace-item-badge.installed {
+  background-color: #4a9e5f;
+  color: #ffffff;
+}
+
+.marketplace-item-description {
+  margin: 8px 0;
+  font-size: 13px;
+  color: #858585;
+  line-height: 1.5;
+}
+
+.marketplace-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  margin-top: 8px;
+}
+
+.marketplace-item-publisher {
+  color: #858585;
+}
+
+.marketplace-item-status {
+  color: #858585;
+}
+
+.marketplace-item-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.install-btn,
+.manage-btn {
+  padding: 8px 16px;
+  background-color: #007acc;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.install-btn:hover {
+  background-color: #005a9e;
+}
+
+.manage-btn {
+  background-color: #4a9e5f;
+}
+
+.manage-btn:hover {
+  background-color: #3d7f4f;
+}
+
+.marketplace-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: #858585;
+}
+
+.marketplace-empty .hint {
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #858585;
+}
+
+.empty-state .hint {
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.extension-item {
+  background-color: #252526;
+  border: 1px solid #3e3e42;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition: all 0.2s;
+}
+
+.extension-item:hover {
+  border-color: #007acc;
+}
+
+.extension-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.extension-header-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.extension-name {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.extension-version {
+  font-size: 11px;
+  color: #858585;
+  padding: 2px 6px;
+  background-color: #3e3e42;
+  border-radius: 3px;
+}
+
+.extension-description {
+  margin: 4px 0;
+  font-size: 12px;
+  color: #858585;
+  line-height: 1.4;
+}
+
+.extension-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: 11px;
+}
+
+.extension-publisher {
+  color: #858585;
+}
+
+.extension-status {
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-active {
+  background-color: #4a9e5f;
+  color: #ffffff;
+}
+
+.status-inactive {
+  background-color: #3e3e42;
+  color: #858585;
+}
+
+.status-loaded {
+  background-color: #3e3e42;
+  color: #858585;
+}
+
+.status-error {
+  background-color: #c93535;
+  color: #ffffff;
+}
+
+.extension-error {
+  margin-top: 8px;
+  padding: 8px;
+  background-color: #3e1f1f;
+  border: 1px solid #c93535;
+  border-radius: 3px;
+  font-size: 11px;
+  color: #ff6b6b;
+}
+
+.extension-actions {
+  display: flex;
+  align-items: center;
+  margin-left: 12px;
+}
+
+.toggle-btn {
+  padding: 6px 12px;
+  background-color: #007acc;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.toggle-btn:hover:not(:disabled) {
+  background-color: #005a9e;
+}
+
+.toggle-btn:disabled {
+  background-color: #3e3e42;
+  color: #858585;
+  cursor: not-allowed;
+}
+
+.toggle-btn.active {
+  background-color: #4a9e5f;
+}
+
+.toggle-btn.active:hover {
+  background-color: #3d7f4f;
+}
+

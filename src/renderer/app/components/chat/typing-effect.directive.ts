@@ -1,11 +1,11 @@
-import { Directive, ElementRef, Input, OnInit, OnDestroy, Renderer2 } from '@angular/core';
+import { Directive, ElementRef, Input, OnInit, OnDestroy, OnChanges, SimpleChanges, Renderer2 } from '@angular/core';
 
 @Directive({
   selector: '[appTypingEffect]',
   standalone: true
 })
-export class TypingEffectDirective implements OnInit, OnDestroy {
-  @Input() text: string = '';
+export class TypingEffectDirective implements OnInit, OnDestroy, OnChanges {
+  @Input('appTypingEffect') text: string = '';
   @Input() speed: number = 30; // ms por caractere
   @Input() enabled: boolean = true;
 
@@ -23,6 +23,17 @@ export class TypingEffectDirective implements OnInit, OnDestroy {
       this.startTyping();
     } else {
       this.renderer.setProperty(this.el.nativeElement, 'textContent', this.text);
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['text'] && !changes['text'].firstChange) {
+      this.stopTyping();
+      if (this.enabled && this.text) {
+        this.startTyping();
+      } else {
+        this.renderer.setProperty(this.el.nativeElement, 'textContent', this.text);
+      }
     }
   }
 

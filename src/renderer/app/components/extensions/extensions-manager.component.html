@@ -1,0 +1,115 @@
+<div class="extensions-manager">
+  <div class="extensions-header">
+    <h2>Extensões</h2>
+    <button class="reload-btn" (click)="reloadExtensions()" title="Recarregar extensões" *ngIf="activeTab === 'installed'">
+      🔄
+    </button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="extensions-tabs">
+    <button 
+      class="tab-btn"
+      [class.active]="activeTab === 'installed'"
+      (click)="setActiveTab('installed')">
+      📦 Instaladas ({{ extensions.length }})
+    </button>
+    <button 
+      class="tab-btn"
+      [class.active]="activeTab === 'marketplace'"
+      (click)="setActiveTab('marketplace')">
+      🛒 Marketplace
+    </button>
+  </div>
+
+  <!-- Instaladas Tab -->
+  <div class="extensions-list" *ngIf="activeTab === 'installed'">
+    <div *ngIf="extensions.length === 0" class="empty-state">
+      <p>Nenhuma extensão instalada</p>
+      <p class="hint">Instale extensões no diretório de extensões</p>
+    </div>
+
+    <div *ngFor="let extension of extensions" class="extension-item">
+      <div class="extension-info">
+        <div class="extension-header-info">
+          <h3 class="extension-name">{{ extension.manifest.displayName || extension.manifest.name }}</h3>
+          <span class="extension-version">v{{ extension.manifest.version }}</span>
+        </div>
+        <p class="extension-description" *ngIf="extension.manifest.description">
+          {{ extension.manifest.description }}
+        </p>
+        <div class="extension-meta">
+          <span class="extension-publisher" *ngIf="extension.manifest.publisher">
+            por {{ extension.manifest.publisher }}
+          </span>
+          <span class="extension-status" [class]="getExtensionStatusClass(extension.status)">
+            {{ getExtensionStatusLabel(extension.status) }}
+          </span>
+        </div>
+        <div class="extension-error" *ngIf="extension.error">
+          ⚠️ {{ extension.error }}
+        </div>
+      </div>
+      <div class="extension-actions">
+        <button 
+          class="toggle-btn"
+          [class.active]="extension.status === 'active'"
+          [disabled]="extension.status === 'error'"
+          (click)="toggleExtension(extension)">
+          {{ extension.status === 'active' ? 'Desativar' : 'Ativar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Marketplace Tab -->
+  <div class="marketplace-list" *ngIf="activeTab === 'marketplace'">
+    <div class="marketplace-header">
+      <p class="marketplace-description">
+        Descubra e instale extensões para melhorar sua experiência de desenvolvimento
+      </p>
+    </div>
+
+    <div class="marketplace-extensions">
+      <div *ngFor="let marketplaceExt of marketplaceExtensions" class="marketplace-item">
+        <div class="marketplace-item-icon">{{ marketplaceExt.icon }}</div>
+        <div class="marketplace-item-info">
+          <div class="marketplace-item-header">
+            <h3 class="marketplace-item-name">{{ marketplaceExt.displayName }}</h3>
+            <span class="marketplace-item-version">v{{ marketplaceExt.version }}</span>
+            <span class="marketplace-item-badge installed" *ngIf="isInstalled(marketplaceExt.id)">
+              ✓ Instalada
+            </span>
+          </div>
+          <p class="marketplace-item-description">{{ marketplaceExt.description }}</p>
+          <div class="marketplace-item-meta">
+            <span class="marketplace-item-publisher">{{ marketplaceExt.publisher }}</span>
+            <span class="marketplace-item-status" *ngIf="isInstalled(marketplaceExt.id)">
+              Status: {{ getExtensionStatusLabel(getInstalledExtension(marketplaceExt.id)?.status || '') }}
+            </span>
+          </div>
+        </div>
+        <div class="marketplace-item-actions">
+          <button 
+            class="install-btn"
+            *ngIf="!isInstalled(marketplaceExt.id)"
+            (click)="installFromMarketplace(marketplaceExt, $event)">
+            📥 Instalar
+          </button>
+          <button 
+            class="manage-btn"
+            *ngIf="isInstalled(marketplaceExt.id)"
+            (click)="setActiveTab('installed')">
+            Gerenciar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="marketplace-empty" *ngIf="marketplaceExtensions.length === 0">
+      <p>Nenhuma extensão disponível no marketplace</p>
+      <p class="hint">Mais extensões em breve!</p>
+    </div>
+  </div>
+</div>
+

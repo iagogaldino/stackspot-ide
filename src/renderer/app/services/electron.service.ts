@@ -23,6 +23,12 @@ declare global {
       // Config methods
       saveConfig: (config: any) => Promise<{ success: boolean; error?: string }>;
       loadConfig: () => Promise<{ success: boolean; config?: any; error?: string }>;
+      // Extensions methods
+      listExtensions: () => Promise<{ success: boolean; extensions?: any[]; error?: string }>;
+      loadExtensionManifest: (path: string) => Promise<{ success: boolean; manifest?: any; error?: string }>;
+      loadExtensionModule: (extensionPath: string, mainPath: string) => Promise<{ success: boolean; code?: string; path?: string; error?: string }>;
+      readExtensionFile: (filePath: string) => Promise<{ success: boolean; content?: string; error?: string }>;
+      installExtension: (extensionId: string) => Promise<{ success: boolean; path?: string; error?: string }>;
     };
   }
 }

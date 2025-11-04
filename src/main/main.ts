@@ -463,3 +463,125 @@ ipcMain.on('terminal:terminate', () => {
   }
 });
 
+// ============================================
+// EXTENSION SYSTEM HANDLERS
+// ============================================
+
+const { ExtensionLoader } = require('./extensions/extension-loader');
+
+// Listar extensões instaladas
+ipcMain.handle('extensions:list', async () => {
+  try {
+    const extensionPaths = await ExtensionLoader.listExtensions();
+    const extensions = await Promise.all(
+      extensionPaths.map((extPath: string) => ExtensionLoader.getExtensionInfo(extPath))
+    );
+    return { success: true, extensions };
+  } catch (error: any) {
+    return { success: false, error: error.message, extensions: [] };
+  }
+});
+
+// Carregar manifest de extensão
+ipcMain.handle('extensions:loadManifest', async (_, extensionPath: string) => {
+  try {
+    const manifest = await ExtensionLoader.loadManifest(extensionPath);
+    if (!manifest) {
+      return { success: false, error: 'Manifest não encontrado' };
+    }
+    return { success: true, manifest };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+});
+
+// Carregar módulo da extensão (retorna o código fonte como string)
+ipcMain.handle('extensions:loadModule', async (_, extensionPath: string, mainPath: string) => {
+  try {
+    const fullPath = path.resolve(extensionPath, mainPath);
+    
+    // Verificar se o arquivo existe
+    if (!fs.existsSync(fullPath)) {
+      return { success: false, error: `Arquivo principal não encontrado: ${fullPath}` };
+    }
+
+    // Ler o código fonte como string (não executar no main process)
+    const code = await fs.readFile(fullPath, 'utf-8');
+    
+    return { success: true, code: code, path: fullPath };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+});
+
+// Ler arquivo de extensão (para carregar o código JavaScript)
+ipcMain.handle('extensions:readFile', async (_, filePath: string) => {
+  try {
+    const content = await fs.readFile(filePath, 'utf-8');
+    return { success: true, content };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+});
+
+// Instalar extensão do marketplace/local
+ipcMain.handle('extensions:install', async (_, extensionId: string) => {
+  console.log('[IPC] Handler extensions:install chamado para:', extensionId);
+  try {
+    // Caminho da extensão no projeto
+    // __dirname em modo dev aponta para dist/main/main/
+    // Em produção, aponta para o diretório onde está o main.js empacotado
+    let projectRoot: string;
+    if (app.isPackaged) {
+      // Em produção (empacotado)
+      projectRoot = app.getAppPath();
+    } else {
+      // Em desenvolvimento
+      projectRoot = path.join(__dirname, '..', '..');
+    }
+    const projectExtensionsPath = path.join(projectRoot, 'extensions', extensionId);
+    
+    // Caminho de destino (userData/extensions)
+    const userDataPath = app.getPath('userData');
+    const extensionsPath = path.join(userDataPath, 'extensions');
+    const destPath = path.join(extensionsPath, extensionId);
+    
+    // Criar diretório de extensões se não existir
+    if (!fs.existsSync(extensionsPath)) {
+      fs.mkdirSync(extensionsPath, { recursive: true });
+    }
+    
+    // Verificar se a extensão existe no projeto
+    if (!fs.existsSync(projectExtensionsPath)) {
+      return { success: false, error: `Extensão ${extensionId} não encontrada no projeto` };
+    }
+    
+    // Remover destino se existir
+    if (fs.existsSync(destPath)) {
+      await fs.remove(destPath);
+    }
+    
+    // Copiar extensão (excluindo node_modules)
+    const items = await fs.readdir(projectExtensionsPath, { withFileTypes: true });
+    
+    for (const item of items) {
+      if (item.name === 'node_modules') {
+        continue; // Pular node_modules
+      }
+      
+      const sourceItem = path.join(projectExtensionsPath, item.name);
+      const destItem = path.join(destPath, item.name);
+      
+      if (item.isDirectory()) {
+        await fs.copy(sourceItem, destItem);
+      } else {
+        await fs.copyFile(sourceItem, destItem);
+      }
+    }
+    
+    return { success: true, path: destPath };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+});
+

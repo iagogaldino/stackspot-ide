@@ -1,0 +1,59 @@
+{
+  "name": "tag-validator-extension",
+  "displayName": "Validador de Tags",
+  "version": "1.0.0",
+  "description": "Identifica e marca tags HTML/XML não fechadas automaticamente",
+  "publisher": "myide",
+  "engines": {
+    "myide": "^1.0.0"
+  },
+  "main": "./dist/main.js",
+  "activationEvents": [
+    "onStart"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "tagValidator.validate",
+        "title": "Validar Tags",
+        "category": "Editor"
+      },
+      {
+        "command": "tagValidator.clearMarkers",
+        "title": "Limpar Marcadores",
+        "category": "Editor"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "tagValidator.validate",
+        "key": "ctrl+shift+v",
+        "mac": "cmd+shift+v"
+      }
+    ],
+    "configuration": [
+      {
+        "id": "tagValidator.autoValidate",
+        "title": "Validação Automática",
+        "type": "boolean",
+        "default": true,
+        "description": "Validar tags automaticamente ao editar"
+      },
+      {
+        "id": "tagValidator.validateOnSave",
+        "title": "Validar ao Salvar",
+        "type": "boolean",
+        "default": true,
+        "description": "Validar tags quando o arquivo é salvo"
+      },
+      {
+        "id": "tagValidator.fileTypes",
+        "title": "Tipos de Arquivo",
+        "type": "array",
+        "default": [".html", ".xml", ".tsx", ".jsx"],
+        "description": "Extensões de arquivo para validar"
+      }
+    ]
+  }
+}
+

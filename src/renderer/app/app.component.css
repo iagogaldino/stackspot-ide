@@ -15,6 +15,11 @@
   position: relative;
 }
 
+/* Activity Bar */
+app-activity-bar {
+  flex-shrink: 0;
+}
+
 /* Status Bar - garantir que fique no bottom */
 .app-container > app-status-bar {
   flex-shrink: 0;
@@ -33,6 +38,15 @@
   background-color: #252526;
   border-right: 1px solid #3e3e42;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-placeholder {
+  padding: 40px 20px;
+  text-align: center;
+  color: #858585;
+  font-size: 14px;
 }
 
 .main-content {

@@ -45,6 +45,17 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // Config
   saveConfig: (config: any) => ipcRenderer.invoke('config:save', config),
-  loadConfig: () => ipcRenderer.invoke('config:load')
+  loadConfig: () => ipcRenderer.invoke('config:load'),
+
+  // Extensions
+  listExtensions: () => ipcRenderer.invoke('extensions:list'),
+  loadExtensionManifest: (path: string) => ipcRenderer.invoke('extensions:loadManifest', path),
+  loadExtensionModule: (extensionPath: string, mainPath: string) => ipcRenderer.invoke('extensions:loadModule', extensionPath, mainPath),
+  readExtensionFile: (filePath: string) => ipcRenderer.invoke('extensions:readFile', filePath),
+  installExtension: (extensionId: string) => ipcRenderer.invoke('extensions:install', extensionId)
 });
+
+// Expor API de extensões no window.myIDE (similar ao VS Code)
+// O ExtensionService irá popular isso depois
+// Não criar o objeto aqui para evitar problemas com readonly
 

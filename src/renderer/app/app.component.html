@@ -1,11 +1,29 @@
 <div class="app-container">
   <div class="app-content">
-    <!-- Sidebar - File Tree -->
-    <aside class="sidebar" *ngIf="currentProjectPath">
+    <!-- Activity Bar -->
+    <app-activity-bar (viewChanged)="onViewChanged($event)"></app-activity-bar>
+
+    <!-- Sidebar - File Tree ou Extensions -->
+    <aside class="sidebar">
+      <!-- File Tree -->
       <app-file-tree 
+        *ngIf="activeView === 'explorer' && currentProjectPath"
         [projectPath]="currentProjectPath"
         (fileSelected)="onFileSelected($event)">
       </app-file-tree>
+      
+      <!-- Extensions Manager -->
+      <app-extensions-manager *ngIf="activeView === 'extensions'"></app-extensions-manager>
+      
+      <!-- Placeholder para outras views -->
+      <div class="sidebar-placeholder" *ngIf="activeView !== 'explorer' && activeView !== 'extensions'">
+        <p>{{ activeView }} - Em breve</p>
+      </div>
+      
+      <!-- Placeholder quando não há projeto e view é explorer -->
+      <div class="sidebar-placeholder" *ngIf="activeView === 'explorer' && !currentProjectPath">
+        <p>Abra um projeto para ver os arquivos</p>
+      </div>
     </aside>
 
     <!-- Main Content -->

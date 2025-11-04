@@ -6,6 +6,7 @@ import { JSONVisualEditorComponent } from '../json-editor/json-visual-editor.com
 import { JSONEditorSettingsComponent } from '../json-editor/settings/json-editor-settings.component';
 import { MarkdownPreviewComponent } from '../markdown-preview/markdown-preview.component';
 import { TabsService } from '../../services/tabs.service';
+import { MonacoEditorService } from '../../services/monaco-editor.service';
 import { Subscription } from 'rxjs';
 import * as monaco from 'monaco-editor';
 
@@ -55,7 +56,8 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
   constructor(
     private fileService: FileService,
     private jsonEditorConfig: JSONEditorConfigService,
-    private tabsService: TabsService
+    private tabsService: TabsService,
+    private monacoEditorService: MonacoEditorService
   ) {}
 
   ngOnInit() {
@@ -80,6 +82,8 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
       window.removeEventListener('resize', this.resizeListener);
     }
     if (this.editor) {
+      // Desregistrar editor antes de destruir
+      this.monacoEditorService.unregisterEditor();
       this.editor.dispose();
     }
   }
@@ -303,6 +307,9 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
       }
     });
 
+    // Registrar editor no serviço para extensões
+    this.monacoEditorService.registerEditor(this.editor, this.filePath);
+
     // Listener para mudanças no conteúdo
     this.editor.onDidChangeModelContent(() => {
       this.markTabAsDirty();
@@ -325,8 +332,13 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
     };
     window.addEventListener('resize', this.resizeListener);
 
-    // Salvar quando conteúdo mudar (debounce seria ideal aqui)
+    // Marcar como "dirty" (não salvo) quando conteúdo mudar
     this.editor.onDidChangeModelContent(() => {
+      this.markTabAsDirty();
+    });
+
+    // Adicionar atalho Ctrl+S para salvar
+    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
       this.saveFile();
     });
 

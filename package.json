@@ -13,7 +13,9 @@
     "electron": "electron .",
     "electron:dev": "npm run build:main && concurrently \"npm start\" \"wait-on http://localhost:4200 && electron .\"",
     "electron:pack": "npm run build:all && electron-builder",
-    "postinstall": "electron-builder install-app-deps || true"
+    "postinstall": "electron-builder install-app-deps || true",
+    "install:extension": "node scripts/install-extension.js",
+    "install:extension:ps1": "powershell -ExecutionPolicy Bypass -File scripts/install-extension.ps1"
   },
   "keywords": [
     "angular",

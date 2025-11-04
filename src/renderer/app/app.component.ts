@@ -7,13 +7,17 @@ import { TerminalComponent } from './components/terminal/terminal.component';
 import { ChatComponent } from './components/chat/chat.component';
 import { TabsComponent } from './components/tabs/tabs.component';
 import { StatusBarComponent } from './components/status-bar/status-bar.component';
+import { ActivityBarComponent, ActivityView } from './components/activity-bar/activity-bar.component';
+import { ExtensionsManagerComponent } from './components/extensions/extensions-manager.component';
 import { TabsService } from './services/tabs.service';
+import { WorkspaceService } from './services/workspace.service';
+import { ExtensionService } from './services/extension.service';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FileTreeComponent, EditorComponent, ProjectPanelComponent, TerminalComponent, ChatComponent, TabsComponent, StatusBarComponent],
+  imports: [CommonModule, FileTreeComponent, EditorComponent, ProjectPanelComponent, TerminalComponent, ChatComponent, TabsComponent, StatusBarComponent, ActivityBarComponent, ExtensionsManagerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -23,10 +27,13 @@ export class AppComponent implements OnInit, OnDestroy {
   selectedFile: string | null = null;
   showTerminal = false;
   showChat = false;
+  activeView: ActivityView = 'explorer';
   private activeTabSubscription?: Subscription;
 
   constructor(
     private tabsService: TabsService,
+    private workspaceService: WorkspaceService,
+    private extensionService: ExtensionService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -60,6 +67,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onProjectOpened(projectPath: string) {
     this.currentProjectPath = projectPath;
+    // Atualizar workspace service para extensões
+    this.workspaceService.setProjectPath(projectPath);
     // O terminal será atualizado automaticamente via Input binding
   }
 
@@ -74,6 +83,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   toggleChat() {
     this.showChat = !this.showChat;
+  }
+
+  onViewChanged(view: ActivityView) {
+    this.activeView = view;
   }
 }
 
