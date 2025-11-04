@@ -29,7 +29,7 @@ import { CommonModule } from '@angular/common';
       border-top: var(--border-width-thin) solid var(--color-status-bar-border);
       flex-shrink: 0;
       user-select: none;
-      z-index: var(--z-index-dropdown);
+      z-index: var(--z-index-status-bar);
       position: relative;
     }
 
