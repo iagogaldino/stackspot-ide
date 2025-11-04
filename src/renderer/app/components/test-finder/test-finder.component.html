@@ -1,10 +1,10 @@
 <div class="test-finder">
   <div class="test-finder-header">
-    <h3>🧪 Arquivos de Teste</h3>
+    <h3>📝 Gerador de Testes</h3>
     <div class="header-actions">
       <button 
         class="refresh-btn"
-        (click)="loadTestFiles()"
+        (click)="loadSourceFiles()"
         [disabled]="loading"
         title="Atualizar lista">
         {{ loading ? '⏳' : '🔄' }}
@@ -15,7 +15,7 @@
   <div class="test-finder-content">
     <!-- Loading -->
     <div class="test-finder-loading" *ngIf="loading">
-      <p>Buscando arquivos de teste...</p>
+      <p>Buscando arquivos fonte...</p>
     </div>
 
     <!-- Error -->
@@ -25,8 +25,8 @@
 
     <!-- Empty state -->
     <div class="test-finder-empty" *ngIf="!loading && !error && testFiles.length === 0">
-      <p>Nenhum arquivo de teste encontrado</p>
-      <p class="hint">Arquivos .spec.ts, .test.ts serão exibidos aqui</p>
+      <p>Nenhum arquivo fonte encontrado</p>
+      <p class="hint">Arquivos .ts (código fonte) serão exibidos aqui. Arquivos de teste (.spec.ts) são excluídos.</p>
     </div>
 
     <!-- Test files list -->
@@ -75,14 +75,105 @@
 
     <!-- Summary and Actions -->
     <div class="test-finder-summary" *ngIf="!loading && testFiles.length > 0">
-      <p>{{ testFiles.length }} arquivo(s) de teste encontrado(s)</p>
+      <p>{{ testFiles.length }} arquivo(s) fonte encontrado(s)</p>
       <button 
         class="generate-test-btn"
         (click)="generateTest()"
         [disabled]="selectedTests.size === 0"
-        title="Gerar teste para os arquivos selecionados">
+        title="Gerar testes para os arquivos fonte selecionados">
         ✨ Gerar Teste
       </button>
+    </div>
+  </div>
+
+  <!-- Modal de Progresso -->
+  <div class="progress-modal-overlay" *ngIf="showProgress" (click)="closeProgress()">
+    <div class="progress-modal" (click)="$event.stopPropagation()">
+      <div class="progress-modal-header">
+        <h3>✨ Gerando Testes</h3>
+        <button 
+          class="close-btn" 
+          (click)="closeProgress()"
+          [disabled]="generating"
+          title="Fechar">
+          ✕
+        </button>
+      </div>
+
+      <div class="progress-modal-content" *ngIf="generationProgress">
+        <!-- Progresso Geral -->
+        <div class="progress-section">
+          <div class="progress-info">
+            <span class="progress-label">Arquivo {{ generationProgress.currentFile }} de {{ generationProgress.totalFiles }}</span>
+            <span class="progress-percent">{{ Math.round(generationProgress.overallProgress) }}%</span>
+          </div>
+          <div class="progress-bar">
+            <div 
+              class="progress-bar-fill" 
+              [style.width.%]="generationProgress.overallProgress">
+            </div>
+          </div>
+        </div>
+
+        <!-- Arquivo Atual -->
+        <div class="current-file-section" *ngIf="generationProgress.currentFilePath">
+          <p class="current-file-label">Processando:</p>
+          <p class="current-file-name">{{ getFileName(generationProgress.currentFilePath) }}</p>
+          <p class="file-status" [class.status-processing]="generationProgress.fileStatus === 'processing' || generationProgress.fileStatus === 'generating'"
+                              [class.status-testing]="generationProgress.fileStatus === 'testing'"
+                              [class.status-refining]="generationProgress.fileStatus === 'refining'"
+                              [class.status-completed]="generationProgress.fileStatus === 'completed'"
+                              [class.status-error]="generationProgress.fileStatus === 'error'">
+            <span *ngIf="generationProgress.fileStatus === 'processing'">📋 Preparando...</span>
+            <span *ngIf="generationProgress.fileStatus === 'generating'">🤖 Gerando teste...</span>
+            <span *ngIf="generationProgress.fileStatus === 'testing'">🧪 Executando testes...</span>
+            <span *ngIf="generationProgress.fileStatus === 'refining'">🔧 Refinando testes...</span>
+            <span *ngIf="generationProgress.fileStatus === 'completed'">✅ Concluído</span>
+            <span *ngIf="generationProgress.fileStatus === 'error'">❌ Erro</span>
+          </p>
+        </div>
+
+        <!-- Detalhes do Arquivo -->
+        <div class="file-details" *ngIf="generationProgress.fileProgress">
+          <div class="it-blocks-list" *ngIf="generationProgress.fileProgress.itBlocks.length > 0">
+            <p class="it-blocks-label">Testes:</p>
+            <div 
+              class="it-block-item" 
+              *ngFor="let it of generationProgress.fileProgress.itBlocks"
+              [class.status-pending]="it.status === 'pending'"
+              [class.status-generating]="it.status === 'generating'"
+              [class.status-testing]="it.status === 'testing'"
+              [class.status-passed]="it.status === 'passed'"
+              [class.status-failed]="it.status === 'failed'"
+              [class.status-skipped]="it.status === 'skipped'">
+              <span class="it-status-icon">
+                <span *ngIf="it.status === 'pending'">⚪</span>
+                <span *ngIf="it.status === 'generating'">🔄</span>
+                <span *ngIf="it.status === 'testing'">🧪</span>
+                <span *ngIf="it.status === 'passed'">✅</span>
+                <span *ngIf="it.status === 'failed'">❌</span>
+                <span *ngIf="it.status === 'skipped'">⏭️</span>
+              </span>
+              <span class="it-name">{{ it.name }}</span>
+              <span class="it-attempts" *ngIf="it.attempts > 0">({{ it.attempts }}/{{ it.maxAttempts }})</span>
+              <span class="it-error" *ngIf="it.error && it.status === 'failed'">{{ it.error }}</span>
+            </div>
+          </div>
+
+          <div class="file-error" *ngIf="generationProgress.fileProgress.error">
+            <p>❌ Erro: {{ generationProgress.fileProgress.error }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="progress-modal-footer">
+        <button 
+          class="cancel-btn" 
+          (click)="cancelGeneration()"
+          [disabled]="!generating">
+          Cancelar
+        </button>
+      </div>
     </div>
   </div>
 </div>

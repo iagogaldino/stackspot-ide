@@ -4,6 +4,8 @@ import { FileService } from '../../services/file.service';
 import { TabsService } from '../../services/tabs.service';
 import { WorkspaceService } from '../../services/workspace.service';
 import { TerminalService } from '../../services/terminal.service';
+import { TestGeneratorService } from '../../services/test-generator/test-generator.service';
+import { TerminalVisibilityService } from '../../services/terminal-visibility.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -19,6 +21,9 @@ export class TestFinderComponent implements OnInit, OnDestroy {
   loading = false;
   error: string | null = null;
   openedTestFile: string | null = null;
+  generating = false;
+  showProgress = false;
+  generationProgress: any = null;
   private subscriptions = new Subscription();
   private currentProjectPath: string | null = null;
 
@@ -26,21 +31,40 @@ export class TestFinderComponent implements OnInit, OnDestroy {
     private fileService: FileService,
     private tabsService: TabsService,
     private workspaceService: WorkspaceService,
-    private terminalService: TerminalService
+    private terminalService: TerminalService,
+    private testGeneratorService: TestGeneratorService,
+    private terminalVisibilityService: TerminalVisibilityService
   ) {}
 
   ngOnInit() {
     // Carregar projeto atual
     this.currentProjectPath = this.workspaceService.getProjectPath();
     if (this.currentProjectPath) {
-      this.loadTestFiles();
+      this.loadSourceFiles();
     }
     
     // Escutar mudanças no projeto
     this.subscriptions.add(
       this.workspaceService.projectPath$.subscribe(projectPath => {
         this.currentProjectPath = projectPath;
-        this.loadTestFiles();
+        this.loadSourceFiles();
+      })
+    );
+
+    // Escutar progresso da geração
+    this.subscriptions.add(
+      this.testGeneratorService.progress$.subscribe(progress => {
+        this.generationProgress = progress;
+        this.showProgress = true;
+        
+        // Se completou, fechar progresso após delay
+        if (progress.fileStatus === 'completed' && progress.currentFile === progress.totalFiles) {
+          setTimeout(() => {
+            this.showProgress = false;
+            this.generating = false;
+            this.loadSourceFiles(); // Recarregar lista para mostrar novos arquivos
+          }, 3000);
+        }
       })
     );
   }
@@ -49,7 +73,7 @@ export class TestFinderComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  async loadTestFiles() {
+  async loadSourceFiles() {
     const projectPath = this.currentProjectPath;
     
     if (!projectPath) {
@@ -62,21 +86,25 @@ export class TestFinderComponent implements OnInit, OnDestroy {
     this.error = null;
 
     try {
-      // Buscar arquivos de teste
-      const testExtensions = ['.spec.ts', '.test.ts', '.spec.js', '.test.js'];
-      this.testFiles = await this.fileService.listFilesByType(projectPath, testExtensions).toPromise() || [];
+      // Buscar arquivos TypeScript fonte (exclui arquivos de teste)
+      this.testFiles = await this.fileService.listSourceFiles(projectPath).toPromise() || [];
       
       // Ordenar por nome
       this.testFiles.sort();
       
-      console.log(`Encontrados ${this.testFiles.length} arquivos de teste`);
+      console.log(`Encontrados ${this.testFiles.length} arquivos fonte (.ts)`);
     } catch (err: any) {
-      this.error = `Erro ao buscar arquivos de teste: ${err.message}`;
-      console.error('Erro ao carregar arquivos de teste:', err);
+      this.error = `Erro ao buscar arquivos fonte: ${err.message}`;
+      console.error('Erro ao carregar arquivos fonte:', err);
       this.testFiles = [];
     } finally {
       this.loading = false;
     }
+  }
+
+  // Manter método loadTestFiles para compatibilidade (caso seja chamado de outros lugares)
+  async loadTestFiles() {
+    await this.loadSourceFiles();
   }
 
   openTestFile(filePath: string, event?: Event) {
@@ -190,7 +218,6 @@ export class TestFinderComponent implements OnInit, OnDestroy {
 
   /**
    * Gera teste para os arquivos selecionados
-   * Por enquanto, apenas loga os arquivos selecionados
    */
   generateTest() {
     const selected = Array.from(this.selectedTests);
@@ -200,8 +227,62 @@ export class TestFinderComponent implements OnInit, OnDestroy {
       return;
     }
 
-    console.log('Gerar teste para os seguintes arquivos:', selected);
-    // TODO: Implementar lógica de geração de teste
+    const projectPath = this.currentProjectPath;
+    if (!projectPath) {
+      alert('Nenhum projeto aberto');
+      return;
+    }
+
+    // Construir caminhos absolutos dos arquivos selecionados
+    const sourceFiles = selected.map(filePath => {
+      if (filePath.startsWith(projectPath)) {
+        return filePath;
+      }
+      // É relativo, construir caminho absoluto
+      const isWindows = navigator.platform.toLowerCase().includes('win');
+      const pathSeparator = isWindows ? '\\' : '/';
+      return `${projectPath}${pathSeparator}${filePath.replace(/\//g, pathSeparator)}`;
+    });
+
+    this.generating = true;
+    this.showProgress = true;
+    
+    // Abrir terminal automaticamente
+    this.terminalVisibilityService.openTerminal();
+
+    // Iniciar geração
+    this.testGeneratorService.generateTests(sourceFiles).subscribe({
+      next: (progress) => {
+        this.generationProgress = progress;
+      },
+      error: (error) => {
+        console.error('Erro ao gerar testes:', error);
+        alert(`Erro ao gerar testes: ${error.message || 'Erro desconhecido'}`);
+        this.generating = false;
+        this.showProgress = false;
+      }
+    });
   }
+
+  /**
+   * Cancela a geração em andamento
+   */
+  cancelGeneration() {
+    this.testGeneratorService.cancel();
+    this.generating = false;
+    this.showProgress = false;
+  }
+
+  /**
+   * Fecha o modal de progresso
+   */
+  closeProgress() {
+    if (!this.generating) {
+      this.showProgress = false;
+    }
+  }
+
+  // Expor Math para o template
+  Math = Math;
 }
 

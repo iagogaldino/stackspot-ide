@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ElectronService } from './electron.service';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, switchMap, catchError } from 'rxjs/operators';
 
 export interface FileItem {
   name: string;
@@ -91,6 +91,59 @@ export class FileService {
    */
   listTypeScriptFiles(projectPath: string): Observable<string[]> {
     return this.listFilesByType(projectPath, ['.ts']);
+  }
+
+  /**
+   * Lista arquivos TypeScript fonte (exclui arquivos de teste)
+   * Para uso no gerador de testes
+   */
+  listSourceFiles(projectPath: string): Observable<string[]> {
+    return this.listFilesByType(projectPath, ['.ts']).pipe(
+      map(files => {
+        // Filtrar arquivos de teste e declarações
+        return files.filter(file => {
+          const fileName = file.toLowerCase();
+          return !fileName.endsWith('.spec.ts') &&
+                 !fileName.endsWith('.test.ts') &&
+                 !fileName.endsWith('.spec.js') &&
+                 !fileName.endsWith('.test.js') &&
+                 !fileName.endsWith('.d.ts') &&
+                 !fileName.includes('node_modules') &&
+                 !fileName.includes('dist') &&
+                 !fileName.includes('build');
+        });
+      })
+    );
+  }
+
+  /**
+   * Determina o arquivo de teste correspondente a um arquivo fonte
+   * Ex: app.component.ts -> app.component.spec.ts
+   */
+  determineTestFilePath(sourceFilePath: string): string {
+    return sourceFilePath.replace(/\.ts$/, '.spec.ts');
+  }
+
+  /**
+   * Verifica se um arquivo existe
+   */
+  fileExists(filePath: string): Observable<boolean> {
+    return this.readFile(filePath).pipe(
+      map(() => true),
+      catchError(() => of(false))
+    );
+  }
+
+  /**
+   * Cria backup de um arquivo
+   */
+  createBackup(filePath: string): Observable<string> {
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const backupPath = `${filePath}.backup.${timestamp}`;
+    return this.readFile(filePath).pipe(
+      switchMap(content => this.writeFile(backupPath, content)),
+      map(() => backupPath)
+    );
   }
 
   /**
