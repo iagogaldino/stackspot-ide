@@ -13,16 +13,16 @@
      ============================================ */
   
   /* Backgrounds */
-  --color-bg-primary: #1e1e1e;
-  --color-bg-secondary: #252526;
-  --color-bg-tertiary: #2d2d30;
-  --color-bg-hover: #2a2d2e;
-  --color-bg-active: #37373d;
+  --color-bg-primary: #121212;
+  --color-bg-secondary: #1a1a1a;
+  --color-bg-tertiary: #1e1e1e;
+  --color-bg-hover: #252525;
+  --color-bg-active: #2d2d2d;
   --color-bg-selected: rgba(0, 122, 204, 0.15);
   --color-bg-selected-hover: rgba(0, 122, 204, 0.2);
   
   /* Borders */
-  --color-border-primary: #3e3e42;
+  --color-border-primary: #2d2d2d;
   --color-border-hover: #007acc;
   --color-border-focus: #007acc;
   
@@ -39,23 +39,29 @@
   --color-accent-primary-active: #004a8e;
   
   /* Status Colors */
-  --color-success: #28a745;
-  --color-success-hover: #20c997;
+  --color-success: #4ec9b0;
+  --color-success-hover: #3db39e;
+  --color-success-bg: rgba(78, 201, 176, 0.1);
   --color-error: #dc3545;
   --color-error-bg: #3a1d1d;
   --color-error-border: #a12626;
   --color-error-text: #f48771;
   --color-warning: #ffc107;
   
+  /* Git/Branch Colors */
+  --color-branch-purple: #c586c0;
+  --color-branch-purple-hover: #b97ab3;
+  
   /* Test Status Colors */
   --color-test-not-run: #858585;
   --color-test-running: #ffc107;
-  --color-test-passed: #28a745;
+  --color-test-passed: #4ec9b0;
   --color-test-failed: #dc3545;
   
   /* Status Bar */
-  --color-status-bar: #007acc;
-  --color-status-bar-border: #005a9e;
+  --color-status-bar: #121212;
+  --color-status-bar-border: #2d2d2d;
+  --color-status-bar-text: #cccccc;
   
   /* ============================================
      Espaçamentos (Spacing)

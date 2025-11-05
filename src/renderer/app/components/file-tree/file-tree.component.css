@@ -2,77 +2,77 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: #252526;
+  background-color: var(--color-bg-secondary);
 }
 
 .file-tree-header {
-  padding: 8px 12px;
-  background-color: #2d2d30;
-  border-bottom: 1px solid #3e3e42;
+  padding: var(--file-tree-header-padding-y) var(--file-tree-header-padding-x);
+  background-color: var(--color-bg-tertiary);
+  border-bottom: var(--border-width-thin) solid var(--color-border-primary);
 }
 
 .file-tree-header h3 {
-  font-size: 12px;
-  font-weight: 600;
-  color: #cccccc;
-  margin: 0 0 8px 0;
+  font-size: var(--file-tree-font-size);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-lg) 0;
 }
 
 .filter-container {
-  margin-top: 8px;
+  margin-top: var(--spacing-lg);
 }
 
 .filter-input {
   width: 100%;
-  padding: 4px 8px;
-  background-color: #3c3c3c;
-  border: 1px solid #3e3e42;
-  border-radius: 2px;
-  color: #cccccc;
-  font-size: 12px;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background-color: var(--color-bg-hover);
+  border: var(--border-width-thin) solid var(--color-border-primary);
+  border-radius: var(--border-radius-sm);
+  color: var(--color-text-primary);
+  font-size: var(--file-tree-font-size);
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color var(--transition-slow);
   box-sizing: border-box;
 }
 
 .filter-input:focus {
-  border-color: #007acc;
-  background-color: #1e1e1e;
+  border-color: var(--color-border-focus);
+  background-color: var(--color-bg-primary);
 }
 
 .filter-input::placeholder {
-  color: #858585;
+  color: var(--color-text-secondary);
 }
 
 .file-tree-content {
   flex: 1;
   overflow-y: auto;
-  padding: 2px 0;
+  padding: var(--spacing-xs) 0;
 }
 
 .file-item-row {
   display: flex;
   align-items: center;
-  padding: 3px 8px;
+  padding: var(--file-tree-item-padding-y) var(--file-tree-item-padding-x);
   cursor: pointer;
   user-select: none;
-  font-size: 12px;
-  color: #cccccc;
-  transition: background-color 0.1s;
+  font-size: var(--file-tree-font-size);
+  color: var(--color-text-primary);
+  transition: background-color var(--transition-fast);
 }
 
 .file-item-row:hover {
-  background-color: #2a2d2e;
+  background-color: var(--color-bg-hover);
 }
 
 .file-item-row.selected {
-  background-color: rgba(0, 122, 204, 0.15);
+  background-color: var(--color-bg-selected);
 }
 
 .file-icon {
-  margin-right: 6px;
-  font-size: 14px;
-  opacity: 0.7;
+  margin-right: var(--spacing-md);
+  font-size: var(--file-tree-icon-size);
+  opacity: var(--opacity-icon);
 }
 
 .file-name {
@@ -84,6 +84,6 @@
 }
 
 .file-item-row.expanded {
-  background-color: #1e1e1e;
+  background-color: var(--color-bg-primary);
 }
 

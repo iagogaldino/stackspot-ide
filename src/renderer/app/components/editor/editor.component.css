@@ -5,7 +5,7 @@
   width: 100%;
   min-width: 0;
   min-height: 0;
-  background-color: #1e1e1e;
+  background-color: var(--color-bg-primary);
   overflow: hidden;
   position: relative;
 }
@@ -42,11 +42,11 @@
 }
 
 .editor-header {
-  background-color: #2d2d30;
-  border-bottom: 1px solid #3e3e42;
-  padding: 6px 12px;
-  font-size: 12px;
-  color: #cccccc;
+  background-color: var(--color-bg-tertiary);
+  border-bottom: var(--border-width-thin) solid var(--color-border-primary);
+  padding: var(--spacing-md) var(--spacing-2xl);
+  font-size: var(--font-size-md);
+  color: var(--color-text-primary);
   flex-shrink: 0;
   display: flex;
   justify-content: space-between;
@@ -66,20 +66,20 @@
 .toggle-editor-btn,
 .config-btn {
   background: transparent;
-  border: 1px solid #3e3e42;
-  border-radius: 2px;
-  color: #858585;
-  padding: 3px 8px;
-  font-size: 11px;
+  border: var(--border-width-thin) solid var(--color-border-primary);
+  border-radius: var(--border-radius-sm);
+  color: var(--color-text-secondary);
+  padding: 3px var(--spacing-lg);
+  font-size: var(--font-size-sm);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all var(--transition-normal) var(--transition-ease);
 }
 
 .toggle-editor-btn:hover,
 .config-btn:hover {
-  background-color: #2d2d30;
-  border-color: #007acc;
-  color: #cccccc;
+  background-color: var(--color-bg-tertiary);
+  border-color: var(--color-accent-primary);
+  color: var(--color-text-primary);
 }
 
 .monaco-editor {

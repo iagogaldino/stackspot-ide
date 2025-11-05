@@ -23,7 +23,7 @@ import { CommonModule } from '@angular/common';
       align-items: center;
       height: var(--status-bar-height);
       background-color: var(--color-status-bar);
-      color: var(--color-text-white);
+      color: var(--color-status-bar-text);
       font-size: var(--status-bar-font-size);
       padding: 0 var(--status-bar-padding-x);
       border-top: var(--border-width-thin) solid var(--color-status-bar-border);
