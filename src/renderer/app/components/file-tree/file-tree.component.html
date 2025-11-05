@@ -1,9 +1,18 @@
 <div class="file-tree">
   <div class="file-tree-header">
     <h3>Explorador</h3>
+    <div class="filter-container">
+      <input 
+        type="text" 
+        class="filter-input"
+        placeholder="Filtrar arquivos..."
+        [(ngModel)]="filterText"
+        (ngModelChange)="onFilterChange()"
+        (click)="$event.stopPropagation()">
+    </div>
   </div>
   <div class="file-tree-content">
-    <ng-container *ngFor="let item of files">
+    <ng-container *ngFor="let item of filteredFiles">
       <div class="file-item">
         <div 
           class="file-item-row"
