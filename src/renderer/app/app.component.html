@@ -26,8 +26,11 @@
         (fileCreated)="onFileSelected($event)">
       </app-chat>
       
+      <!-- Search Panel -->
+      <app-search *ngIf="activeView === 'search'"></app-search>
+      
       <!-- Placeholder para outras views -->
-      <div class="sidebar-placeholder" *ngIf="activeView !== 'explorer' && activeView !== 'extensions' && activeView !== 'tests' && activeView !== 'chat'">
+      <div class="sidebar-placeholder" *ngIf="activeView !== 'explorer' && activeView !== 'extensions' && activeView !== 'tests' && activeView !== 'chat' && activeView !== 'search'">
         <p>{{ activeView }} - Em breve</p>
       </div>
       

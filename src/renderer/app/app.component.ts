@@ -11,6 +11,7 @@ import { ActivityBarComponent, ActivityView } from './components/activity-bar/ac
 import { ExtensionsManagerComponent } from './components/extensions/extensions-manager.component';
 import { TestFinderComponent } from './components/test-finder/test-finder.component';
 import { TestPromptComponent } from './components/test-prompt/test-prompt.component';
+import { SearchComponent } from './components/search/search.component';
 import { TabsService } from './services/tabs.service';
 import { WorkspaceService } from './services/workspace.service';
 import { ExtensionService } from './services/extension.service';
@@ -21,7 +22,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FileTreeComponent, EditorComponent, ProjectPanelComponent, TerminalComponent, ChatComponent, TabsComponent, StatusBarComponent, ActivityBarComponent, ExtensionsManagerComponent, TestFinderComponent, TestPromptComponent, ResizableDirective],
+  imports: [CommonModule, FileTreeComponent, EditorComponent, ProjectPanelComponent, TerminalComponent, ChatComponent, TabsComponent, StatusBarComponent, ActivityBarComponent, ExtensionsManagerComponent, TestFinderComponent, TestPromptComponent, SearchComponent, ResizableDirective],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

@@ -1,0 +1,76 @@
+<div class="search-container">
+  <div class="search-header">
+    <h3>🔍 Buscar Arquivos</h3>
+  </div>
+
+  <div class="search-controls">
+    <!-- Campo de busca por nome -->
+    <div class="search-input-group">
+      <input 
+        type="text" 
+        class="search-input"
+        placeholder="Buscar por nome de arquivo..."
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="onSearchChange()"
+        (keydown.enter)="performSearch()">
+      <button 
+        class="search-button"
+        (click)="performSearch()"
+        [disabled]="loading"
+        title="Buscar">
+        🔍
+      </button>
+    </div>
+
+    <!-- Filtro por tipo -->
+    <div class="filter-group">
+      <label class="filter-label">Filtrar por tipo:</label>
+      <select 
+        class="filter-select"
+        [(ngModel)]="fileTypeFilter"
+        (ngModelChange)="onFileTypeChange()">
+        <option *ngFor="let type of fileTypes" [value]="type.value">
+          {{ type.label }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="search-results">
+    <!-- Loading -->
+    <div class="search-loading" *ngIf="loading">
+      <p>Buscando arquivos...</p>
+    </div>
+
+    <!-- Error -->
+    <div class="search-error" *ngIf="error && !loading">
+      <p>❌ {{ error }}</p>
+    </div>
+
+    <!-- Empty state sem resultados -->
+    <div class="search-empty" *ngIf="!loading && !error && filteredResults.length === 0">
+      <p>Nenhum arquivo encontrado</p>
+      <p class="hint" *ngIf="searchQuery.trim() !== ''">Tente ajustar os filtros de busca</p>
+      <p class="hint" *ngIf="searchQuery.trim() === '' && fileTypeFilter !== ''">Nenhum arquivo do tipo selecionado encontrado</p>
+    </div>
+
+    <!-- Results list -->
+    <div class="results-list" *ngIf="!loading && !error && filteredResults.length > 0">
+      <div class="results-count">
+        {{ filteredResults.length }} arquivo{{ filteredResults.length !== 1 ? 's' : '' }} encontrado{{ filteredResults.length !== 1 ? 's' : '' }}
+      </div>
+      <div 
+        class="result-item"
+        *ngFor="let result of filteredResults"
+        (click)="openFile(result)"
+        title="Clique para abrir">
+        <span class="result-icon">{{ getFileIcon(result.extension) }}</span>
+        <div class="result-info">
+          <span class="result-name">{{ result.name }}</span>
+          <span class="result-path">{{ result.relativePath }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
