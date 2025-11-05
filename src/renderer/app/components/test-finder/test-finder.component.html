@@ -105,12 +105,12 @@
         <div class="progress-section">
           <div class="progress-info">
             <span class="progress-label">Arquivo {{ generationProgress.currentFile }} de {{ generationProgress.totalFiles }}</span>
-            <span class="progress-percent">{{ Math.round(generationProgress.overallProgress) }}%</span>
+            <span class="progress-percent">{{ Math.round(generationProgress.overallProgress ?? 0) }}%</span>
           </div>
           <div class="progress-bar">
             <div 
               class="progress-bar-fill" 
-              [style.width.%]="generationProgress.overallProgress">
+              [style.width.%]="generationProgress.overallProgress ?? 0">
             </div>
           </div>
         </div>

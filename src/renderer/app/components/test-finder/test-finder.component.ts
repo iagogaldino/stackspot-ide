@@ -4,7 +4,7 @@ import { FileService } from '../../services/file.service';
 import { TabsService } from '../../services/tabs.service';
 import { WorkspaceService } from '../../services/workspace.service';
 import { TerminalService } from '../../services/terminal.service';
-import { TestGeneratorService } from '../../services/test-generator/test-generator.service';
+import { TestGeneratorService, TestGenerationProgress } from '../../services/test-generator';
 import { TerminalVisibilityService } from '../../services/terminal-visibility.service';
 import { Subscription } from 'rxjs';
 
@@ -23,7 +23,7 @@ export class TestFinderComponent implements OnInit, OnDestroy {
   openedTestFile: string | null = null;
   generating = false;
   showProgress = false;
-  generationProgress: any = null;
+  generationProgress: TestGenerationProgress | null = null;
   private subscriptions = new Subscription();
   private currentProjectPath: string | null = null;
 
@@ -53,7 +53,7 @@ export class TestFinderComponent implements OnInit, OnDestroy {
 
     // Escutar progresso da geração
     this.subscriptions.add(
-      this.testGeneratorService.progress$.subscribe(progress => {
+      this.testGeneratorService.progress$.subscribe((progress: TestGenerationProgress) => {
         this.generationProgress = progress;
         this.showProgress = true;
         
@@ -252,10 +252,10 @@ export class TestFinderComponent implements OnInit, OnDestroy {
 
     // Iniciar geração
     this.testGeneratorService.generateTests(sourceFiles).subscribe({
-      next: (progress) => {
+      next: (progress: TestGenerationProgress) => {
         this.generationProgress = progress;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Erro ao gerar testes:', error);
         alert(`Erro ao gerar testes: ${error.message || 'Erro desconhecido'}`);
         this.generating = false;
