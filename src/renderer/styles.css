@@ -74,3 +74,76 @@ app-root {
   cursor: row-resize;
 }
 
+/* ============================================
+   Scrollbar Styles - Design Global Elegante
+   ============================================ */
+
+/* Scrollbar global para WebKit (Chrome, Safari, Edge) */
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+  border-radius: 6px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  border: 2px solid var(--color-bg-primary);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 40px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.03);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+}
+
+*::-webkit-scrollbar-corner {
+  background: var(--color-bg-primary);
+}
+
+/* Scrollbar para Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.08) var(--color-bg-primary);
+}
+
+/* Scrollbar mais fina para elementos específicos */
+.sidebar::-webkit-scrollbar,
+.file-tree-content::-webkit-scrollbar,
+.test-editor-content::-webkit-scrollbar,
+.chat-messages::-webkit-scrollbar,
+.search-results::-webkit-scrollbar {
+  width: 10px;
+}
+
+.sidebar::-webkit-scrollbar-thumb,
+.file-tree-content::-webkit-scrollbar-thumb,
+.test-editor-content::-webkit-scrollbar-thumb,
+.chat-messages::-webkit-scrollbar-thumb,
+.search-results::-webkit-scrollbar-thumb {
+  border-width: 1px;
+  min-height: 30px;
+}
+
+/* Scrollbar horizontal para tabs - mais discreta */
+.tabs-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.tabs-container::-webkit-scrollbar-thumb {
+  border-width: 1px;
+  border-radius: 4px;
+  min-width: 30px;
+}
+

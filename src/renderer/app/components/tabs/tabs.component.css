@@ -110,27 +110,5 @@
   font-style: italic;
 }
 
-/* Scrollbar para a lista de abas */
-.tabs-container::-webkit-scrollbar {
-  height: var(--spacing-sm);
-}
-
-.tabs-container::-webkit-scrollbar-track {
-  background: var(--color-bg-primary);
-}
-
-.tabs-container::-webkit-scrollbar-thumb {
-  background: var(--color-border-primary);
-  border-radius: var(--border-radius-sm);
-}
-
-.tabs-container::-webkit-scrollbar-thumb:hover {
-  background: #505050;
-}
-
-/* Scrollbar para Firefox */
-.tabs-container {
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-border-primary) var(--color-bg-primary);
-}
+/* Scrollbar para a lista de abas - usa estilos globais definidos em styles.css */
 

@@ -313,24 +313,7 @@
   flex-shrink: 0;
 }
 
-/* Scrollbar styling */
-.chat-messages::-webkit-scrollbar {
-  width: 10px;
-}
-
-.chat-messages::-webkit-scrollbar-track {
-  background: var(--color-bg-primary);
-}
-
-.chat-messages::-webkit-scrollbar-thumb {
-  background: var(--color-border-primary);
-  border-radius: 5px;
-  border: 2px solid var(--color-bg-primary);
-}
-
-.chat-messages::-webkit-scrollbar-thumb:hover {
-  background: #505050;
-}
+/* Scrollbar styling - usa estilos globais definidos em styles.css */
 
 /* Badge do arquivo aberto */
 .file-badge {

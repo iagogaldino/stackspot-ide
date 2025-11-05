@@ -66,8 +66,7 @@
   gap: 12px;
   min-height: 0; /* Importante para o scroll funcionar com flexbox */
   /* Scrollbar para Firefox */
-  scrollbar-width: thin;
-  scrollbar-color: #3e3e42 #1e1e1e;
+  /* Usa estilos globais de scrollbar */
 }
 
 .json-field-container {
@@ -75,25 +74,7 @@
   flex-shrink: 0; /* Evita que os campos sejam comprimidos */
 }
 
-/* Scrollbar customizada para Chrome/Edge/Safari */
-.json-editor-content::-webkit-scrollbar {
-  width: 12px;
-}
-
-.json-editor-content::-webkit-scrollbar-track {
-  background: #1e1e1e;
-  border-radius: 6px;
-}
-
-.json-editor-content::-webkit-scrollbar-thumb {
-  background: #3e3e42;
-  border-radius: 6px;
-  border: 2px solid #1e1e1e;
-}
-
-.json-editor-content::-webkit-scrollbar-thumb:hover {
-  background: #505050;
-}
+/* Scrollbar customizada - usa estilos globais definidos em styles.css */
 
 .json-editor-error {
   padding: 20px;
