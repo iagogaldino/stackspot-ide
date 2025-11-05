@@ -147,3 +147,68 @@ app-root {
   min-width: 30px;
 }
 
+/* ============================================
+   Context Menu Directive Styles
+   ============================================ */
+
+.context-menu {
+  background-color: var(--color-bg-tertiary);
+  border: var(--border-width-thin) solid var(--color-border-primary);
+  border-radius: var(--border-radius-md);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
+  padding: var(--spacing-xs) 0;
+  min-width: 200px;
+  max-width: 300px;
+  z-index: 10000;
+  font-size: var(--font-size-md);
+  color: var(--color-text-primary);
+}
+
+.context-menu-item {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-xl);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  user-select: none;
+}
+
+.context-menu-item:hover:not(.disabled) {
+  background-color: var(--color-bg-hover);
+}
+
+.context-menu-item.disabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+.context-menu-item-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  width: 100%;
+}
+
+.context-menu-item-icon {
+  font-size: var(--font-size-lg);
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.context-menu-item-label {
+  flex: 1;
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-normal);
+}
+
+.context-menu-item.disabled .context-menu-item-label {
+  color: var(--color-text-secondary);
+}
+
+.context-menu-separator {
+  height: 1px;
+  background-color: var(--color-border-primary);
+  margin: var(--spacing-xs) 0;
+}
+

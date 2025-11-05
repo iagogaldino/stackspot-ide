@@ -63,7 +63,9 @@
         class="result-item"
         *ngFor="let result of filteredResults"
         (click)="openFile(result)"
-        title="Clique para abrir">
+        [appContextMenu]="getContextMenuItems(result)"
+        [contextData]="result"
+        title="Clique para abrir / Clique com botão direito para menu">
         <span class="result-icon">{{ getFileIcon(result.extension) }}</span>
         <div class="result-info">
           <span class="result-name">{{ result.name }}</span>

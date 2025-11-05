@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { FileService } from '../../services/file.service';
 import { TabsService } from '../../services/tabs.service';
 import { WorkspaceService } from '../../services/workspace.service';
+import { ContextMenuDirective, ContextMenuItem } from '../../directives/context-menu.directive';
 import { Subscription } from 'rxjs';
 
 interface SearchResult {
@@ -16,7 +17,7 @@ interface SearchResult {
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ContextMenuDirective],
   templateUrl: './search.component.html',
   styleUrl: './search.component.css'
 })
@@ -180,6 +181,72 @@ export class SearchComponent implements OnInit, OnDestroy {
       case '.test.ts': return '🧪';
       default: return '📄';
     }
+  }
+
+  // Métodos para o menu de contexto
+  getContextMenuItems(result: SearchResult): ContextMenuItem[] {
+    return [
+      {
+        label: 'Abrir arquivo',
+        icon: '📂',
+        action: () => this.openFile(result)
+      },
+      {
+        label: 'Copiar caminho',
+        icon: '📋',
+        action: () => this.copyFilePath(result)
+      },
+      {
+        label: 'Copiar nome do arquivo',
+        icon: '📄',
+        action: () => this.copyFileName(result)
+      },
+      {
+        separator: true
+      },
+      {
+        label: 'Revelar no explorador',
+        icon: '👁️',
+        action: () => this.revealInExplorer(result)
+      },
+      {
+        label: 'Abrir em nova aba',
+        icon: '➕',
+        action: () => this.openInNewTab(result)
+      }
+    ];
+  }
+
+  private copyFilePath(result: SearchResult) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(result.path).then(() => {
+        console.log('Caminho copiado:', result.path);
+        // Aqui você pode adicionar uma notificação visual se desejar
+      }).catch(err => {
+        console.error('Erro ao copiar caminho:', err);
+      });
+    }
+  }
+
+  private copyFileName(result: SearchResult) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(result.name).then(() => {
+        console.log('Nome do arquivo copiado:', result.name);
+      }).catch(err => {
+        console.error('Erro ao copiar nome:', err);
+      });
+    }
+  }
+
+  private revealInExplorer(result: SearchResult) {
+    // Esta funcionalidade pode ser implementada usando Electron APIs
+    console.log('Revelar no explorador:', result.path);
+    // TODO: Implementar usando electron.shell.showItemInFolder() via IPC
+  }
+
+  private openInNewTab(result: SearchResult) {
+    // Abre o arquivo em uma nova aba (mesmo comportamento do openFile, mas pode ser expandido)
+    this.openFile(result);
   }
 }
 
