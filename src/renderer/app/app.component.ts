@@ -31,7 +31,6 @@ export class AppComponent implements OnInit, OnDestroy {
   currentProjectPath: string | null = null;
   selectedFile: string | null = null;
   showTerminal = false;
-  showChat = false;
   activeView: ActivityView = 'explorer';
   private activeTabSubscription?: Subscription;
 

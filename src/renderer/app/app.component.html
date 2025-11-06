@@ -7,7 +7,7 @@
     <aside class="sidebar" appResizable direction="horizontal" [initialSize]="300" [minSize]="150" [maxSize]="800" storageKey="sidebar-width">
       <!-- File Tree -->
       <app-file-tree 
-        *ngIf="activeView === 'explorer' && currentProjectPath"
+        *ngIf="(activeView === 'explorer' || activeView === 'chat') && currentProjectPath"
         [projectPath]="currentProjectPath"
         (fileSelected)="onFileSelected($event)">
       </app-file-tree>
@@ -17,14 +17,6 @@
       
       <!-- Test Finder -->
       <app-test-finder *ngIf="activeView === 'tests'"></app-test-finder>
-      
-      <!-- Chat Panel -->
-      <app-chat 
-        *ngIf="activeView === 'chat'"
-        [projectPath]="currentProjectPath"
-        [selectedFile]="selectedFile"
-        (fileCreated)="onFileSelected($event)">
-      </app-chat>
       
       <!-- Search Panel -->
       <app-search *ngIf="activeView === 'search'"></app-search>
@@ -42,41 +34,54 @@
 
     <!-- Main Content -->
     <main class="main-content">
-    <!-- Tabs -->
-    <app-tabs></app-tabs>
-    
-    <!-- Editor Area -->
-    <div class="editor-area" *ngIf="selectedFile" [class.with-terminal]="showTerminal" [class.with-test-prompt]="isTestFile(selectedFile)">
-      <!-- Layout lado a lado quando tem test-prompt -->
-      <div class="editor-chat-container" *ngIf="isTestFile(selectedFile)">
-        <app-editor [filePath]="selectedFile" class="editor-panel" appResizable direction="horizontal" [initialSize]="400" [minSize]="200" [maxSize]="1200" storageKey="editor-panel-width"></app-editor>
-        <app-test-prompt 
-          [testFilePath]="selectedFile"
-          class="chat-panel">
-        </app-test-prompt>
-      </div>
-      <!-- Layout normal quando não tem test-prompt -->
-      <app-editor *ngIf="!isTestFile(selectedFile)" [filePath]="selectedFile"></app-editor>
-    </div>
-    
-    <!-- No file selected or no project -->
-    <div class="empty-state" *ngIf="!selectedFile || !currentProjectPath" [class.with-terminal]="showTerminal">
-      <app-project-panel 
-        *ngIf="!currentProjectPath"
-        (projectOpened)="onProjectOpened($event)">
-      </app-project-panel>
-      
-      <div class="empty-editor" *ngIf="currentProjectPath && !selectedFile">
-        <h2>Nenhum arquivo selecionado</h2>
-        <p>Selecione um arquivo na árvore de arquivos para começar a editar.</p>
-      </div>
-    </div>
+      <!-- Tabs -->
+      <app-tabs></app-tabs>
 
-    <!-- Terminal -->
-    <div class="terminal-panel" *ngIf="showTerminal" appResizable direction="vertical" [initialSize]="300" [minSize]="100" [maxSize]="600" storageKey="terminal-height">
-      <app-terminal [projectPath]="currentProjectPath"></app-terminal>
-    </div>
-  </main>
+      <div class="main-body">
+        <div class="primary-pane">
+          <!-- Editor Area -->
+          <div class="editor-area" *ngIf="selectedFile" [class.with-terminal]="showTerminal" [class.with-test-prompt]="isTestFile(selectedFile)">
+            <!-- Layout lado a lado quando tem test-prompt -->
+            <div class="editor-chat-container" *ngIf="isTestFile(selectedFile)">
+              <app-editor [filePath]="selectedFile" class="editor-panel" appResizable direction="horizontal" [initialSize]="400" [minSize]="200" [maxSize]="1200" storageKey="editor-panel-width"></app-editor>
+              <app-test-prompt 
+                [testFilePath]="selectedFile"
+                class="chat-panel">
+              </app-test-prompt>
+            </div>
+            <!-- Layout normal quando não tem test-prompt -->
+            <app-editor *ngIf="!isTestFile(selectedFile)" [filePath]="selectedFile"></app-editor>
+          </div>
+          
+          <!-- No file selected or no project -->
+          <div class="empty-state" *ngIf="!selectedFile || !currentProjectPath" [class.with-terminal]="showTerminal">
+            <app-project-panel 
+              *ngIf="!currentProjectPath"
+              (projectOpened)="onProjectOpened($event)">
+            </app-project-panel>
+            
+            <div class="empty-editor" *ngIf="currentProjectPath && !selectedFile">
+              <h2>Nenhum arquivo selecionado</h2>
+              <p>Selecione um arquivo na árvore de arquivos para começar a editar.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Panel à direita -->
+        <aside class="ai-chat-panel" *ngIf="activeView === 'chat'">
+          <app-chat 
+            [projectPath]="currentProjectPath"
+            [selectedFile]="selectedFile"
+            (fileCreated)="onFileSelected($event)">
+          </app-chat>
+        </aside>
+      </div>
+
+      <!-- Terminal -->
+      <div class="terminal-panel" *ngIf="showTerminal" appResizable direction="vertical" [initialSize]="300" [minSize]="100" [maxSize]="600" storageKey="terminal-height">
+        <app-terminal [projectPath]="currentProjectPath"></app-terminal>
+      </div>
+    </main>
 
   </div>
 
