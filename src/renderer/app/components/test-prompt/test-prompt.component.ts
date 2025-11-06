@@ -100,7 +100,7 @@ export class TestPromptComponent implements OnInit, AfterViewInit, OnDestroy, On
     if (!this.agentService.isConfigured()) {
       this.messages.push({
         role: 'assistant',
-        content: 'Por favor, configure sua API key no painel de chat primeiro.',
+        content: 'Por favor, configure o serviço de IA no painel de chat antes de continuar.',
         timestamp: new Date()
       });
       this.scrollToBottom();

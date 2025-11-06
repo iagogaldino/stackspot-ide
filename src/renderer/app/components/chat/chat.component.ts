@@ -5,6 +5,7 @@ import { AgentService } from '../../services/agent.service';
 import { FileService } from '../../services/file.service';
 import { TerminalService } from '../../services/terminal.service';
 import { TestFrameworkService } from '../../services/test-framework.service';
+import { ElectronService } from '../../services/electron.service';
 import { ChatMessage, AgentRequestOptions } from '../../services/agent-provider.interface';
 import { MiniTerminalComponent } from './mini-terminal.component';
 import { CodeBlockComponent } from './code-block.component';
@@ -48,13 +49,13 @@ export class ChatComponent implements OnInit, AfterViewInit, OnChanges {
   messages: Message[] = [];
   userMessage: string = '';
   isTyping: boolean = false;
-  showApiKeyInput: boolean = false;
-  apiKey: string = '';
+  showServiceConfig: boolean = false;
+  serviceUrl: string = 'http://localhost:3000';
   private conversationHistory: ChatMessage[] = [];
   showFileBadge: boolean = true; // Controla se o badge está visível
 
   // Expor método para o template
-  get hasApiKey(): boolean {
+  get isServiceConfigured(): boolean {
     return this.agentService.isConfigured();
   }
 
@@ -66,22 +67,25 @@ export class ChatComponent implements OnInit, AfterViewInit, OnChanges {
     private agentService: AgentService,
     private fileService: FileService,
     private terminalService: TerminalService,
-    private testFrameworkService: TestFrameworkService
+    private testFrameworkService: TestFrameworkService,
+    private electronService: ElectronService
   ) {}
 
   ngOnInit() {
+    this.loadServiceConfig();
+
     // Verificar se já tem provider configurado
     if (this.agentService.isConfigured()) {
       this.messages.push({
         role: 'assistant',
-        content: `Olá! Sou sua assistente de IA (${this.agentService.getProviderName() || 'IA'}). Estou pronta para ajudar você a desenvolver código! Como posso ajudar?`,
+        content: `Olá! Estou conectada ao serviço de IA (${this.agentService.getProviderName() || 'ServiceIA'}). Como posso ajudar no seu projeto hoje?`,
         timestamp: new Date()
       });
     } else {
-      this.showApiKeyInput = true;
+      this.showServiceConfig = true;
       this.messages.push({
         role: 'assistant',
-        content: 'Para usar a assistente de IA, você precisa configurar sua chave da API. Por favor, insira sua API key abaixo.',
+        content: 'Para usar a assistente de IA, informe o endereço do serviço ServiceIA abaixo.',
         timestamp: new Date()
       });
     }
@@ -91,18 +95,32 @@ export class ChatComponent implements OnInit, AfterViewInit, OnChanges {
     this.scrollToBottom();
   }
 
-  saveApiKey() {
-    if (this.apiKey.trim()) {
-      // Configurar o provider atual (por padrão OpenAI)
-      this.agentService.configure({ apiKey: this.apiKey.trim() });
-      this.showApiKeyInput = false;
+  saveServiceConfig() {
+    const trimmedUrl = this.serviceUrl.trim();
+    if (trimmedUrl) {
+      this.agentService.configure({ serviceUrl: trimmedUrl });
+      this.showServiceConfig = false;
       this.messages.push({
         role: 'assistant',
-        content: `API key configurada com sucesso! Agora posso ajudar você a desenvolver código usando ${this.agentService.getProviderName() || 'IA'}. Como posso ajudar?`,
+        content: `Conexão com o serviço ${this.agentService.getProviderName() || 'ServiceIA'} atualizada com sucesso. Estou pronta para ajudar!`,
         timestamp: new Date()
       });
       this.scrollToBottom();
     }
+  }
+
+  private loadServiceConfig() {
+    this.electronService.loadConfig().subscribe({
+      next: (result) => {
+        const savedUrl = result.config?.serviceIA?.serverUrl;
+        if (result.success && typeof savedUrl === 'string' && savedUrl.trim()) {
+          this.serviceUrl = savedUrl;
+        }
+      },
+      error: () => {
+        // Mantém valor padrão/local
+      }
+    });
   }
 
   sendMessage() {
@@ -112,10 +130,10 @@ export class ChatComponent implements OnInit, AfterViewInit, OnChanges {
     if (!this.agentService.isConfigured()) {
       this.messages.push({
         role: 'assistant',
-        content: 'Por favor, configure sua API key primeiro.',
+        content: 'Por favor, configure a URL do serviço ServiceIA antes de continuar.',
         timestamp: new Date()
       });
-      this.showApiKeyInput = true;
+      this.showServiceConfig = true;
       this.scrollToBottom();
       return;
     }
@@ -822,7 +840,7 @@ Instruções:
     if (!this.projectPath || !this.agentService.isConfigured()) {
       this.messages.push({
         role: 'assistant',
-        content: 'Por favor, configure a API key primeiro para gerar testes corrigidos.',
+        content: 'Por favor, configure o serviço de IA antes de gerar testes corrigidos.',
         timestamp: new Date()
       });
       return;

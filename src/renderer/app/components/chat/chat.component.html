@@ -3,32 +3,32 @@
   <div class="chat-header">
     <h3>Assistente IA</h3>
     <button 
-      *ngIf="hasApiKey" 
+      *ngIf="isServiceConfigured" 
       class="settings-button"
-      (click)="showApiKeyInput = !showApiKeyInput"
+      (click)="showServiceConfig = !showServiceConfig"
       title="Configurações">
       ⚙️
     </button>
   </div>
 
   <!-- Input de API Key -->
-  <div class="api-key-container" *ngIf="showApiKeyInput">
+  <div class="api-key-container" *ngIf="showServiceConfig">
     <div class="api-key-input-wrapper">
       <input
-        type="password"
-        [(ngModel)]="apiKey"
-        placeholder="Cole sua API key da OpenAI aqui"
+        type="text"
+        [(ngModel)]="serviceUrl"
+        placeholder="Informe a URL do serviço ServiceIA (ex: http://localhost:3000)"
         class="api-key-input"
-        (keydown.enter)="$event.preventDefault(); saveApiKey()">
+        (keydown.enter)="$event.preventDefault(); saveServiceConfig()">
       <button 
-        (click)="saveApiKey()" 
-        [disabled]="!apiKey.trim()"
+        (click)="saveServiceConfig()" 
+        [disabled]="!serviceUrl.trim()"
         class="save-key-button">
         Salvar
       </button>
     </div>
     <p class="api-key-hint">
-      Obtenha sua API key em: <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com/api-keys</a>
+      Deixe o serviço DelsucIA rodando em <code>http://localhost:3000</code> ou ajuste o endereço conforme sua infraestrutura.
     </p>
   </div>
   

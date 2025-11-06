@@ -3,17 +3,17 @@ import { AppComponent } from './app/app.component';
 import { provideRouter } from '@angular/router';
 import { routes } from './app/app.routes';
 import { AGENT_PROVIDER } from './app/services/agent.service';
-import { OpenAIAgentProvider } from './app/services/providers/openai-agent.provider';
+import { ServiceIAAgentProvider } from './app/services/providers/service-ia-agent.provider';
 import { ElectronService } from './app/services/electron.service';
 
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
     ElectronService,
-    OpenAIAgentProvider,
+    ServiceIAAgentProvider,
     {
       provide: AGENT_PROVIDER,
-      useExisting: OpenAIAgentProvider
+      useExisting: ServiceIAAgentProvider
     }
   ]
 }).catch(err => console.error(err));

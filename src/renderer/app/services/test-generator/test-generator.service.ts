@@ -54,7 +54,7 @@ export class TestGeneratorService {
     }
 
     if (!this.agentService.isConfigured()) {
-      return throwError(() => new Error('Agente não configurado. Por favor, configure a API key primeiro.'));
+      return throwError(() => new Error('Agente não configurado. Por favor, configure o serviço de IA nas configurações do chat.'));
     }
 
     if (sourceFiles.length === 0) {
