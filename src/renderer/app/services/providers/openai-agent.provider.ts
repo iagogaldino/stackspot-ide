@@ -146,6 +146,11 @@ export class OpenAIAgentProvider implements AgentProvider {
       contextText += `\nInformações sobre arquivos do projeto:\n${options.projectFilesInfo}\n\n`;
     }
 
+    if (options?.openFiles?.length) {
+      const openFilesList = options.openFiles.map(file => `- ${file}`).join('\n');
+      contextText += `Arquivos abertos atualmente (${options.openFiles.length}):\n${openFilesList}\n\n`;
+    }
+
     // Adicionar informação sobre execução de comandos
     let commandExecutionInfo = '';
     if (options?.canExecuteCommands) {

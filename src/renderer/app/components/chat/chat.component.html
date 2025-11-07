@@ -108,18 +108,26 @@
   
   <!-- Input fixo no bottom -->
   <div class="chat-input-container">
-    <!-- Badge do arquivo aberto -->
-    <div class="file-badge" *ngIf="selectedFile && showFileBadge">
-      <span class="file-icon">📄</span>
-      <span class="file-name">{{ getFileName(selectedFile) }}</span>
-      <button 
-        class="file-badge-close" 
-        (click)="removeFileFromContext()"
-        title="Remover arquivo do contexto">
-        ×
+    <div class="open-files-panel" *ngIf="openFilesContext.length">
+      <button class="open-files-header" type="button" (click)="toggleOpenFilesPanel()">
+        <span class="chevron" [class.collapsed]="openFilesCollapsed"></span>
+        <span class="open-files-title">{{ openFilesContext.length }} {{ openFilesContext.length === 1 ? 'arquivo aberto' : 'arquivos abertos' }}</span>
       </button>
+
+      <div class="open-files-list" *ngIf="!openFilesCollapsed">
+        <div 
+          class="open-file-item" 
+          *ngFor="let file of openFilesContext" 
+          [class.active]="file === selectedFile"
+          (click)="openFileFromChat(file)"
+          [title]="file">
+          <span class="file-icon">📄</span>
+          <span class="file-name">{{ getFileName(file) }}</span>
+          <span class="file-change-indicator">+0 -0</span>
+        </div>
+      </div>
     </div>
-    
+
     <div class="input-wrapper">
       <textarea
         #messageInput

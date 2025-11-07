@@ -44,6 +44,7 @@ export class ChatComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('messageInput', { static: false }) messageInput!: ElementRef;
   @Input() projectPath: string | null = null;
   @Input() selectedFile: string | null = null;
+  @Input() openFiles: string[] = [];
   @Output() fileCreated = new EventEmitter<string>(); // Emitir quando um arquivo for criado
   
   messages: Message[] = [];
@@ -52,7 +53,7 @@ export class ChatComponent implements OnInit, AfterViewInit, OnChanges {
   showServiceConfig: boolean = false;
   serviceUrl: string = 'http://localhost:3000';
   private conversationHistory: ChatMessage[] = [];
-  showFileBadge: boolean = true; // Controla se o badge está visível
+  openFilesCollapsed = true;
 
   // Expor método para o template
   get isServiceConfigured(): boolean {
@@ -324,6 +325,15 @@ export class ChatComponent implements OnInit, AfterViewInit, OnChanges {
       // this.fileService.readFile(this.selectedFile).subscribe(content => {
       //   options.currentFileContent = content;
       // });
+    }
+
+    const openFilesList = Array.from(new Set((this.openFiles || []).filter(file => !!file)));
+    if (openFilesList.length > 0) {
+      const formattedOpenFiles = openFilesList.map(file => `- ${file}`).join('\n');
+      options.projectFilesInfo = options.projectFilesInfo
+        ? `${options.projectFilesInfo}\n\nArquivos abertos atualmente (${openFilesList.length}):\n${formattedOpenFiles}`
+        : `Arquivos abertos atualmente (${openFilesList.length}):\n${formattedOpenFiles}`;
+      options.openFiles = openFilesList;
     }
 
     // Enviar para o agente usando o AgentService
@@ -651,8 +661,8 @@ Instruções:
     return parts[parts.length - 1] || filePath;
   }
 
-  removeFileFromContext() {
-    this.showFileBadge = false;
+  get openFilesContext(): string[] {
+    return Array.from(new Set((this.openFiles || []).filter(file => !!file)));
   }
 
   /**
@@ -660,6 +670,16 @@ Instruções:
    */
   openCreatedFile(filePath: string) {
     this.fileCreated.emit(filePath);
+  }
+
+  openFileFromChat(filePath: string) {
+    if (filePath) {
+      this.fileCreated.emit(filePath);
+    }
+  }
+
+  toggleOpenFilesPanel() {
+    this.openFilesCollapsed = !this.openFilesCollapsed;
   }
 
   /**
@@ -1128,11 +1148,7 @@ Forneça APENAS o código do teste corrigido, sem explicações adicionais antes
   // Método para resetar o badge quando um novo arquivo é selecionado
   ngOnChanges(changes: SimpleChanges) {
     if (changes['selectedFile']) {
-      if (this.selectedFile) {
-        this.showFileBadge = true;
-      } else {
-        this.showFileBadge = false;
-      }
+      // Sem badge dedicado, nenhuma ação necessária ao alterar seleção
     }
   }
 }

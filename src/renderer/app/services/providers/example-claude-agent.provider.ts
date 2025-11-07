@@ -49,6 +49,15 @@ export class ClaudeAgentProvider implements AgentProvider {
     // A API do Claude tem uma estrutura diferente da OpenAI
     
     return new Observable(observer => {
+      const enhancedMessages: ChatMessage[] = [...messages];
+      const contextMessage = this.buildContextMessage(options);
+      if (contextMessage) {
+        enhancedMessages.unshift({
+          role: 'system',
+          content: contextMessage
+        });
+      }
+
       // Implementação exemplo
       fetch(this.apiUrl, {
         method: 'POST',
@@ -60,7 +69,7 @@ export class ClaudeAgentProvider implements AgentProvider {
         body: JSON.stringify({
           model: options?.model || this.defaultModel,
           max_tokens: options?.maxTokens ?? 2000,
-          messages: messages.map(msg => ({
+          messages: enhancedMessages.map(msg => ({
             role: msg.role === 'system' ? 'user' : msg.role,
             content: msg.content
           }))
@@ -146,6 +155,40 @@ export class ClaudeAgentProvider implements AgentProvider {
         console.error('Erro ao carregar configuração:', error);
       }
     });
+  }
+
+  private buildContextMessage(options?: AgentRequestOptions): string {
+    const contextParts: string[] = [];
+
+    if (options?.projectContext) {
+      contextParts.push(`Contexto do projeto:\n${options.projectContext}`);
+    }
+
+    if (options?.currentFile) {
+      contextParts.push(`Arquivo em foco: ${options.currentFile}`);
+      if (options.currentFileContent) {
+        contextParts.push(`Conteúdo do arquivo:\n\`\`\`\n${options.currentFileContent}\n\`\`\``);
+      }
+    }
+
+    if (options?.projectFilesInfo) {
+      contextParts.push(`Informações adicionais:\n${options.projectFilesInfo}`);
+    }
+
+    if (options?.openFiles?.length) {
+      const openFilesList = options.openFiles.map(file => `- ${file}`).join('\n');
+      contextParts.push(`Arquivos abertos atualmente (${options.openFiles.length}):\n${openFilesList}`);
+    }
+
+    if (options?.canExecuteCommands) {
+      contextParts.push('O usuário pode executar comandos no terminal; quando sugerir um comando, use a formatação `comando`.');
+    }
+
+    if (!contextParts.length) {
+      return '';
+    }
+
+    return contextParts.join('\n\n');
   }
 
   private saveConfig() {

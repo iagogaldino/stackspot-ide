@@ -32,7 +32,9 @@ export class AppComponent implements OnInit, OnDestroy {
   selectedFile: string | null = null;
   showTerminal = false;
   activeView: ActivityView = 'explorer';
+  openFiles: string[] = [];
   private activeTabSubscription?: Subscription;
+  private tabsSubscription?: Subscription;
 
   constructor(
     private tabsService: TabsService,
@@ -63,6 +65,14 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     });
 
+    this.tabsSubscription = this.tabsService.tabs$.subscribe(tabs => {
+      const newOpenFiles = tabs.map(tab => tab.filePath);
+      if (!this.areArraysEqual(this.openFiles, newOpenFiles)) {
+        this.openFiles = [...newOpenFiles];
+        this.cdr.detectChanges();
+      }
+    });
+
     // Escutar solicitações para abrir o terminal
     this.terminalVisibilityService.showTerminal$.subscribe(show => {
       this.showTerminal = show;
@@ -73,6 +83,9 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.activeTabSubscription) {
       this.activeTabSubscription.unsubscribe();
+    }
+    if (this.tabsSubscription) {
+      this.tabsSubscription.unsubscribe();
     }
   }
 
@@ -109,6 +122,16 @@ export class AppComponent implements OnInit, OnDestroy {
     if (!filePath) return false;
     const testExtensions = ['.spec.ts', '.test.ts', '.spec.js', '.test.js'];
     return testExtensions.some(ext => filePath.toLowerCase().endsWith(ext));
+  }
+
+  private areArraysEqual(a: string[], b: string[]): boolean {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) {
+        return false;
+      }
+    }
+    return true;
   }
 }
 

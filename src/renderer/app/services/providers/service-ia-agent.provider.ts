@@ -352,6 +352,11 @@ export class ServiceIAAgentProvider implements AgentProvider, OnDestroy {
       contextParts.push(`Informações adicionais do projeto:\n${options.projectFilesInfo}`);
     }
 
+    if (options?.openFiles?.length) {
+      const openFilesList = options.openFiles.map(file => `- ${file}`).join('\n');
+      contextParts.push(`Arquivos abertos atualmente (${options.openFiles.length}):\n${openFilesList}`);
+    }
+
     if (options?.canExecuteCommands) {
       contextParts.push('O usuário pode executar comandos no terminal. Sugira comandos formatados com backticks (`comando`).');
     }

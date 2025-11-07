@@ -85,6 +85,11 @@ export interface AgentRequestOptions {
   projectFilesInfo?: string;
 
   /**
+   * Lista de arquivos atualmente abertos no editor
+   */
+  openFiles?: string[];
+
+  /**
    * Temperatura para geração (0-1)
    */
   temperature?: number;
